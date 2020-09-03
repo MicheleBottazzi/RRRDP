@@ -1,0 +1,46 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+def ID=1
+
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model() {
+ 
+ // Questo comando restituisce la porzione di cielo visibile 
+ // da ogni pixel della mappa con un valore compreso tra 0 e 1
+ 
+   components {
+    
+        
+        "reader_pit"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "skyview"						  "org.jgrasstools.hortonmachine.modules.hydrogeomorphology.skyview.OmsSkyview"
+        "writer_skyview"            	  "org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+
+            
+         
+   }
+
+  
+   parameter{
+   
+   		// lettura pitfiller
+         "reader_pit.file"                      "${home}/data/Noce/3/dem_3.asc"
+         
+         // scrittura skyview factor
+         "writer_skyview.file"					"${home}/data/Noce/3/sky_3.asc"
+
+        
+   }
+    connect {
+        
+        "reader_pit.outRaster"                 	"skyview.inElev"
+        "skyview.outSky"						"writer_skyview.inRaster"
+
+   }
+
+ }
+}
+
+

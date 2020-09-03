@@ -1,0 +1,89 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+def basin = "RioRessi"
+def startDate	=	"2012-08-01 00:00"
+def endDate		=	"2019-05-10 23:00"
+def basinID = 1
+
+def timestep = 60
+
+/*def basin = "ReDellaPietra"
+def startDate	=	"2018-06-27 11:00"
+def endDate		=	"2018-12-11 12:00"*/
+OMS3.sim {
+	resource "$oms_prj/lib"
+	model(while : "reader_data_airT.doProcess"  ) {
+		components {    
+			"reader_data_airT"            		"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"        
+			"reader_data_RH"            		"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"        
+			"reader_dem"                  		"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"     
+			"reader_sky"                  		"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			"vreader_station"             		"org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader"
+			"swrb"                        		"swrbPointCase.ShortwaveRadiationBalancePointCase"
+			"writer_direct"               		"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 
+			"writer_diffuse"              		"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 		
+			"writer_topATM"						"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"         
+			"writer_total"						"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"   
+			}  
+			parameter{   
+				// parameters reader data input air temperature
+				"reader_data_airT.idfield"		"ID"  
+				"reader_data_airT.file"			"${home}/data/${basin}/${basinID}/${basin}_TEMP.csv"
+				"reader_data_airT.tStart"		"${startDate}"
+				"reader_data_airT.tEnd"			"${endDate}"
+				"reader_data_airT.tTimestep"	"${timestep}"
+				"reader_data_airT.fileNovalue"	"-9999"                    
+				
+				// parameters reader data input relative humidity
+				"reader_data_RH.file"			"${home}/data/${basin}/${basinID}/${basin}_RH.csv"
+				"reader_data_RH.idfield"		"ID"  
+				"reader_data_RH.tStart"		"${startDate}"
+				"reader_data_RH.tEnd"			"${endDate}"
+				"reader_data_RH.tTimestep"	"${timestep}"
+				"reader_data_RH.fileNovalue"	"-9999"                      
+				
+				"reader_dem.file"				"${home}/output/${basin}Out/${basin}Pit.asc"				   	
+				"reader_sky.file"				"${home}/output/${basin}Out/${basin}_skyview.asc"        
+				"vreader_station.file"			"${home}/data/${basin}/${basinID}/${basin}_centroid_ID_${basinID}.shp"
+				
+				// name of the column in the shape file containing the ID of the station
+				"swrb.fStationsid"				"ID" //<---- è giusto l'id? CONTROLLATE
+				"swrb.tStartDate"				"${startDate}"   
+				"swrb.doHourly"					true   //or false if daily        
+				"swrb.pCmO3"					0.6		// parametri da letteratura
+				"swrb.pAlphag"					0.9		// parametri da letteratura
+				"swrb.pVisibility"				80		// parametri da letteratura				            
+				// writer output paramters  
+				"writer_direct.file"			"${home}/data/${basin}/${basinID}/${basin}_ShortwaveDirect.csv" 
+				"writer_direct.tStart"			"${startDate}"
+				"writer_direct.fileNovalue"		"-9999"
+				"writer_direct.tTimestep"		"${timestep}"				        				        
+				// writer output paramters   
+				"writer_diffuse.file"			"${home}/data/${basin}/${basinID}/${basin}_ShortwaveDiffuse.csv" 
+				"writer_diffuse.tStart"			"${startDate}"
+				"writer_diffuse.fileNovalue"	"-9999"
+				"writer_diffuse.tTimestep"		"${timestep}"                
+				// writer output paramters    
+				"writer_topATM.file"			"${home}/data/${basin}/${basinID}/${basin}_ShortwaveTOA.csv" 
+				"writer_topATM.tStart"			"${startDate}"
+				"writer_topATM.fileNovalue"		"-9999"
+				"writer_topATM.tTimestep"		"${timestep}"        
+				// writer output paramters    
+				"writer_total.file"				"${home}/data/${basin}/${basinID}/${basin}_ShortwaveTotal.csv" 
+				"writer_total.tStart"			"${startDate}"
+				"writer_total.fileNovalue"		"-9999"
+				"writer_total.tTimestep"		"${timestep}"        
+				}
+				connect {                 
+					"reader_data_airT.outData"	"swrb.inTemperatureValues"
+					"reader_data_RH.outData"	"swrb.inHumidityValues"       
+					"reader_dem.outRaster"		"swrb.inDem"    
+					"reader_sky.outRaster"		"swrb.inSkyview"          
+					"vreader_station.geodata"	"swrb.inStations"
+					"swrb.outHMdirect"			"writer_direct.inData"
+					"swrb.outHMdiffuse"			"writer_diffuse.inData"
+					"swrb.outHMtopatm"			"writer_topATM.inData"
+					"swrb.outHMtotal"			"writer_total.inData"
+					}
+			}
+	}

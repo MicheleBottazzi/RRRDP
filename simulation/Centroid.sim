@@ -1,0 +1,27 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model( ) {
+ 	components {    
+ 		//"readerData"						"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+ 	//	"vreaderStation"					"org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader"
+        "centroids"						"CentroidsGenerator.Centroid"
+      //  "writerTimeSeries"					"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 
+        }
+        parameter{       	        	
+        	
+        	"centroids.inFolder" 		"${home}/output/DEMs/"
+		//	"centroids.referenceSystem" "32632"
+			"centroids.inputDataType" 	".asc"
+			"centroids.outputPath" 		"${home}/output/Centroids/"
+			"centroids.nameOfOutput" 	"Centroid"
+        	}
+        	connect {        
+        		
+        		}
+        	}
+       }

@@ -1,0 +1,45 @@
+@S,Parameter,
+ created by,george,
+ created at,Thu Jun 25 13:44:42 MDT 2009,
+ adjusted by,olaf,
+ modifed_at,Wed Jan 13 16:50:26 MDT 2012,
+ 
+@P, alfa_r,1
+ 
+@P, alfa_s,1
+ 
+@P, meltingTemperature,2
+ 
+@P,combinedMeltingFactor,0.2531
+
+@P,freezingFactor,0.008
+
+@P,radiationFactor,8.03E-5
+
+@P,alfa_l,0.69
+
+@P,kc_canopy,0.2
+
+@P,s_RootZoneMax,304.87
+
+@P,a,0.23
+
+@P,b,39.3
+
+@P,pB_soil,0.13
+
+@P,c,0.17
+
+@P,d,7
+
+@P,s_RunoffMax,50
+
+@P,e,5.15
+
+@P,f,57.10
+
+@P,s_GroundWaterMax,551.93
+
+@P,x,0.13
+
+@P,uc,1.08

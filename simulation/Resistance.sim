@@ -1,0 +1,100 @@
+import static oms3.SimBuilder.instance as OMS3
+import static oms3.SimBuilder.*
+
+def home = oms_prj
+def basin = "RioRessi"
+def startDate	=	"2012-08-01 00:00"
+def endDate		=	"2019-05-10 23:00"
+
+// start and end date of the simulation
+
+//def basin = "ReDellaPietra"
+//def startDate	=	"2018-07-31 11:00"
+//def endDate		=	"2018-09-07 17:00"
+def basinID = 1
+def timestep = 60
+OMS3.sim {
+	resource "$oms_prj/lib"
+	model(while:"readerDataTemperature.doProcess") {
+		components {
+			
+			"readerDataTemperature"           			"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"readerDataHumidity"          				"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"readerDataShortWaveDirect"         		"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+    		"readerDataPressure"          				"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"readerDataSoilMosture"          			"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"	
+			"readerCentroids"							"org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader"		       
+			"Resistance"                    			"etpPointCase.OmsResistance"   
+			"stressResistanceWriter"                  	"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"   
+			
+			}
+			parameter{  			
+				"readerDataTemperature.file"          	"${home}/data/${basin}/${basinID}/${basin}_TEMP.csv"
+				"readerDataTemperature.idfield"       	"ID"  
+				"readerDataTemperature.tStart"        	"${startDate}"
+				"readerDataTemperature.tEnd"			"${endDate}"
+				"readerDataTemperature.tTimestep"		"${timestep}"
+				"readerDataTemperature.fileNovalue"   	"-9999.0"				        		
+	       
+					
+				"readerDataHumidity.file"         		"${home}/data/${basin}/${basinID}/${basin}_RH.csv"
+				"readerDataHumidity.idfield"      		"ID"  
+				"readerDataHumidity.tStart"       		"${startDate}"
+				"readerDataHumidity.tEnd"         		"${endDate}"
+				"readerDataHumidity.tTimestep"    		"${timestep}"
+				"readerDataHumidity.fileNovalue"  		"-9999.0"	
+				
+				"readerDataShortWaveDirect.file"		"${home}/data/${basin}/${basinID}/${basin}_RAD.csv" 
+				"readerDataShortWaveDirect.idfield"		"ID"
+				"readerDataShortWaveDirect.tStart"		"${startDate}"
+				"readerDataShortWaveDirect.tEnd"		"${endDate}"
+				"readerDataShortWaveDirect.tTimestep"	"${timestep}"
+				"readerDataShortWaveDirect.fileNovalue"	"-9999.0"				
+				
+				"readerDataPressure.file"         		"${home}/data/${basin}/${basinID}/${basin}_PRES.csv" 
+				"readerDataPressure.idfield"      		"ID"  
+				"readerDataPressure.tStart"       		"${startDate}"
+				"readerDataPressure.tEnd"         		"${endDate}"
+				"readerDataPressure.tTimestep"    		"${timestep}"
+				"readerDataPressure.fileNovalue"  		"-9999.0"       
+				
+				"readerDataSoilMosture.file"         	"${home}/data/${basin}/${basinID}/${basin}_SWC.csv" 
+				"readerDataSoilMosture.idfield"      	"ID"  
+				"readerDataSoilMosture.tStart"       	"${startDate}"
+				"readerDataSoilMosture.tEnd"         	"${endDate}"
+				"readerDataSoilMosture.tTimestep"    	"${timestep}"
+				"readerDataSoilMosture.fileNovalue"  	"-9999.0"       			
+				
+				"Resistance.alpha" 	0.0064
+        		"Resistance.theta" 	0.9
+       	 		//"Resistance.d"  	1.1
+        		"Resistance.VPD0"	5.0
+     	
+        		"Resistance.Tl"  	"-5.0"
+        		"Resistance.T0"  	20.0
+        		"Resistance.Th"  	45.0
+     	
+        		"Resistance.f" 		"-40.0E-6"
+
+        		"Resistance.thetaW"	0.16097615
+        		"Resistance.thetaC" 0.2826
+        
+				"readerCentroids.file"					"${home}/data/${basin}/${basinID}/${basin}_centroid_ID_${basinID}.shp"
+				"Resistance.idCentroids"            	"ID"
+				"Resistance.centroidElevation"			"Elevation"
+				    		
+				"stressResistanceWriter.file"        	"${home}/data/${basin}/${basinID}/${basin}_stressShz.csv" 
+				"stressResistanceWriter.tStart"       	"${startDate}"
+				"stressResistanceWriter.tTimestep"   	"${timestep}"
+				}
+				connect {
+					"readerDataTemperature.outData"		"Resistance.inAirTemperature"
+					"readerDataHumidity.outData"  		"Resistance.inRelativeHumidity"
+					"readerDataShortWaveDirect.outData" "Resistance.inShortWaveRadiationDirect"
+					"readerDataPressure.outData"		"Resistance.inAtmosphericPressure"
+					//"readerDataSoilMosture.outData"		"Resistance.inSoilMosture"	
+					"readerCentroids.geodata"			"Resistance.inCentroids"		
+					"Resistance.outStressResistance"	"stressResistanceWriter.inData"	        			        	
+					}
+			}
+	}

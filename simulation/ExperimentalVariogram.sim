@@ -1,0 +1,52 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+// start and end date of the simulation
+def month  		=	01
+def year  		=	2010
+def variable  	=	"TA"
+def startDate	=	"${year}-${month}-01 00:00"
+def endDate		=	"${year}-${month}-01 00:00"
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model(while: "reader_data.doProcess" ) {
+   components {
+        "reader_data"					"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+        "vreader_station"				"org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader"
+        "EV"							"experimentalVariogram.ExperimentalVariogram"
+        "writer_distances"				"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 
+        "writer_semivariance"			"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 
+   }  
+   parameter{
+        "reader_data.file"				"${home}/data/OMSdf_${variable}_QC_ANNUAL.csv"
+        "reader_data.idfield"			"val"  
+        "reader_data.tStart"			"${startDate}"
+        "reader_data.tEnd"				"${endDate}"
+        "reader_data.tTimestep"			60
+        "reader_data.fileNovalue"		"-9999"
+       
+        "vreader_station.file"			"${home}/data/Stations15.shp"                   
+        "EV.fStationsid"				"id" 
+        "EV.Cutoff_divide"				5
+            
+        "writer_distances.file"			"${home}/output/Kriging/${variable}/DS_${variable}_${month}_${year}.csv" 
+        "writer_distances.tStart"		"${startDate}"
+        "writer_distances.tTimestep"	60
+        
+        "writer_semivariance.file"		"${home}/output/Kriging/${variable}/EV_${variable}_${month}_${year}.csv" 
+        "writer_semivariance.tStart"	"${startDate}"
+        "writer_semivariance.tTimestep"	60
+   }
+    connect {
+        "reader_data.outData"			"EV.inData"          
+        "vreader_station.geodata"		"EV.inStations"
+        "EV.outDistances"				"writer_distances.inData"
+        "EV.outExperimentalVariogram"	"writer_semivariance.inData"
+   }
+ }
+}
+
+
+

@@ -1,0 +1,66 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+// start and end date of the simulation
+def startDate= "2013-12-15 00:00"
+def endDate="2014-12-16 00:00"
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model(while: "reader_data.doProcess" ) {
+   components {
+    
+        // components to be called: reader input data, lwrb and writer output data
+        "reader_data"            	  "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+        "vreader_station"             "org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader"
+        
+        "EV"                          "experimentalVariogram.ExperimentalVariogram"
+        "writer_distances"            "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 
+        "writer_semivariance"         "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 
+            
+         
+   }
+
+  
+   parameter{
+   
+        // parameter of the reader components 
+        "reader_data.file"             "${home}/data/elaborazioni_P_formattati_1.csv"
+        "reader_data.idfield"          "ID"  
+        "reader_data.tStart"           "${startDate}"
+        "reader_data.tEnd"             "${endDate}"
+        "reader_data.tTimestep"          60
+        "reader_data.fileNovalue"      "-9999.0"
+        
+        
+        "vreader_station.file"                  "${home}/data/stazioni_quote.shp"
+            
+        "EV.fStationsid"                      "ID_P" 
+        "EV.Cutoff_divide"					   5
+
+            
+        // parameter of the writing component    
+        "writer_distances.file"                   "${home}/output/mary/distances_P.csv" 
+        "writer_distances.tStart"                 "${startDate}"
+        "writer_distances.tTimestep"               60
+        
+        "writer_semivariance.file"                 "${home}/output/mary/EV_P.csv" 
+        "writer_semivariance.tStart"               "${startDate}"
+        "writer_semivariance.tTimestep"             60
+        
+   }
+    connect {
+        
+        "reader_data.outData"             	   "EV.inData"          
+        "vreader_station.geodata"              "EV.inStations"
+        
+        "EV.outDistances"            			"writer_distances.inData"
+        "EV.outExperimentalVariogram"           "writer_semivariance.inData"
+
+   }
+
+ }
+}
+
+

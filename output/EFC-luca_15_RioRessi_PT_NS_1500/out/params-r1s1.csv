@@ -1,0 +1,53 @@
+@S,Parameter
+ modifed_at,Wed Jan 13 16:50:26 MDT 2012
+ created at,Thu Jun 25 13:44:42 MDT 2009
+ adjusted by,olaf
+ created by,george
+ round,1
+ step,1
+ step_params,alfa_r alfa_s meltingTemperature combinedMeltingFactor freezingFactor radiationFactor alfa_l kc_canopy s_RootZoneMax a b pB_soil c d s_RunoffMax e f s_GroundWaterMax x uc
+ calibration_start,Thu Jan 01 00:00:00 CET 2015
+ luca_name,EFC-luca_15_RioRessi_PT_NS_1500
+ model_class,grap_attempt
+ param_files,/home/drugo/Sim/RRRDP/data/RioRessi/params-r0s0.csv
+
+@P,alfa_r,0.8674031889131477
+
+@P,alfa_s,1.0943148570251537
+
+@P,meltingTemperature,0.8798441522585385
+
+@P,combinedMeltingFactor,0.2112998746388417
+
+@P,freezingFactor,0.0517016245661992
+
+@P,radiationFactor,3.191694934479017E-5
+
+@P,alfa_l,0.6589108083801758
+
+@P,kc_canopy,0.5708522928392963
+
+@P,s_RootZoneMax,360.79584125394564
+
+@P,a,6.511429814015996
+
+@P,b,27.71492408507629
+
+@P,pB_soil,0.21687220943008967
+
+@P,c,0.2242540871216363
+
+@P,d,23.185258858400857
+
+@P,s_RunoffMax,47.48590138635758
+
+@P,e,6.49226205976967
+
+@P,f,6.067182321904021
+
+@P,s_GroundWaterMax,486.5233120161671
+
+@P,x,0.2260915889404842
+
+@P,uc,1.0700022064450998
+

@@ -1,0 +1,69 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+// start and end date of the simulation
+def startDate= "2013-12-15 00:00"
+def endDate="2015-12-16 00:00"
+def ID=34
+def timestep=60
+def basin="Ofanto"
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model(while: "reader_data.doProcess" ) {
+   components {
+    
+        "reader_data"            	  "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+        "vreader_station"             "org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader"
+        
+        "LAI"                   "LAI.LAIreaderMODIS"
+        "writer_LAI"            "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 
+        
+            
+         
+   }
+
+  
+   parameter{
+   
+        // parameter of the reader components 
+        "reader_data.file"             "${home}/data/${basin}/${ID}/precip_${ID}.csv"  
+        "reader_data.idfield"          "ID"  
+        "reader_data.tStart"           "${startDate}"
+        "reader_data.tEnd"             "${endDate}"
+        "reader_data.tTimestep"         "${timestep}"
+        "reader_data.fileNovalue"      "-9999"
+        
+        "LAI.inFolder"					"${home}/data/Basilicata/lai"
+        
+        "vreader_station.file"          "${home}/data/${basin}/${ID}/centroids_ID_${ID}.shp"
+            
+        "LAI.fStationsid"                  "ID" 
+        "LAI.dataType"					   "tif"
+        "LAI.scaleFactor"					0.1
+        "LAI.prj" 						  "${home}/data/${basin}/ED50UTM33.prj"
+
+            
+        // parameter of the writing component    
+        "writer_LAI.file"                   "${home}/data/${basin}/${ID}/LAI_${ID}.csv" 
+        "writer_LAI.tStart"                 "${startDate}"
+        "writer_LAI.tTimestep"              "${timestep}"
+        "writer_LAI.fileNovalue"      "-9999"
+        
+
+        
+   }
+    connect {
+        
+        "reader_data.tCurrent"             	   "LAI.tCurrent"          
+        "vreader_station.geodata"              "LAI.inStations"
+              
+        "LAI.outLAIHM"           			"writer_LAI.inData"
+
+   }
+
+ }
+}
+
+

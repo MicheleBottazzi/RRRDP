@@ -1,0 +1,30 @@
+import static oms3.SimBuilder.instance as OMS3
+
+def basin = "RioRessi"
+def startDate	=	"2015-01-01 00:00"
+def endDate		=	"2015-12-31 23:00"
+
+/*def startDate	=	"2015-01-01 00:00"
+def endDate		=	"2016-11-23 11:00"
+
+/*def startDate	=	"2014-01-01 00:00"
+def endDate		=	"2014-12-31 23:00"*/
+def typeET = "PT"
+def typeOF = "NS"
+OMS3.graph(path: "./data/${basin}/topo${basin}.csv",
+           simpath: "./simulation_${basin}/simulation_calibrazione/") {	
+           	build()    
+           	graph(traverser: "downstream.all") {
+           		components {
+           			}        
+           		}    
+           	flags {
+           		"1" "{overwrite}"
+         
+           		}           		    
+           	paramfiles {    	
+
+           		"1" "$oms_prj/data/${basin}/params-r0s0.csv"
+           		
+           		}
+           	}

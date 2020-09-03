@@ -1,0 +1,89 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+def basin = "RioRessi"
+def startDate	=	"2012-08-01 00:00"
+def endDate		=	"2019-05-10 23:00"
+def basinID = 1
+
+def timestep = 60
+// start and end date of the simulation
+
+/*def basin = "ReDellaPietra"
+def startDate	=	"2018-06-27 11:00"
+def endDate		=	"2018-12-11 12:00"*/
+OMS3.sim {
+	resource "$oms_prj/lib"
+	model(while: "reader_data_airT.doProcess" ) {
+		components {    
+			// components: reader data input, lwrb and writer data output 
+			"reader_data_airT"						"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"reader_data_RH"						"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"reader_data_CI"						"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"reader_sky"							"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			"vreader_station"						"org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader"
+			"lwrb"									"lwrbPointCase.Lwrb"
+			"writer_down"                			"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 
+			"writer_up"								"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"                         
+			}  
+			parameter{   
+				// parameters reader data input air temperature
+				"reader_data_airT.file"			"${home}/data/${basin}/${basinID}/${basin}_TEMP.csv"
+				"reader_data_airT.idfield"			"ID"  
+				"reader_data_airT.tStart"			"${startDate}"
+				"reader_data_airT.tEnd"				"${endDate}"
+				"reader_data_airT.tTimestep"		"${timestep}"
+				"reader_data_airT.fileNovalue"		"-9999"        
+				
+				// parameters reader data input relative humidity
+				"reader_data_RH.file"			"${home}/data/${basin}/${basinID}/${basin}_RH.csv"
+				"reader_data_RH.idfield"			"ID"  
+				"reader_data_RH.tStart"				"${startDate}"
+				"reader_data_RH.tEnd"				"${endDate}"
+				"reader_data_RH.tTimestep"			"${timestep}"
+				"reader_data_RH.fileNovalue"		"-9999"        				        				                
+				
+				// parameters reader data input clearness index
+				"reader_data_CI.file"				"${home}/data/${basin}/${basinID}/${basin}_CI.csv"
+				"reader_data_CI.idfield"			"ID"  
+				"reader_data_CI.tStart"				"${startDate}"
+				"reader_data_CI.tEnd"				"${endDate}"
+				"reader_data_CI.tTimestep"			"${timestep}"
+				"reader_data_CI.fileNovalue"		"-9999"				                
+					
+			//	"reader_dem.file"				"${home}/output/${basin}Out/${basin}Pit.asc"				   	
+				"reader_sky.file"					"${home}/output/${basin}Out/${basin}_skyview.asc"        
+				"vreader_station.file"				"${home}/data/${basin}/${basinID}/${basin}_centroid_ID_${basinID}.shp"
+ 
+				// name of the column in the shape file containing the ID of the station
+				"lwrb.fStationsid"					"ID" 
+				// parameters of the lwrb  component
+				"lwrb.X"							0.7						
+				"lwrb.Y"               				5.95
+				"lwrb.model"           				"6"
+				"lwrb.epsilonS"        				0.98
+				"lwrb.A_Cloud"         				0
+				"lwrb.B_Cloud"         				1
+				// writer output paramters     
+				"writer_down.file"					"${home}/data/${basin}/${basinID}/${basin}_LongwaveDownwelling.csv"
+				"writer_down.tStart"				"${startDate}"
+				"writer_down.fileNovalue"			"-9999"
+				"writer_down.tTimestep"				"${timestep}"				        
+				
+				"writer_up.file"					"${home}/data/${basin}/${basinID}/${basin}_LongwaveUpwelling.csv"
+				"writer_up.tStart"					"${startDate}"
+				"writer_up.fileNovalue"				"-9999"
+				"writer_up.tTimestep"				"${timestep}"        
+				}
+				connect {        
+					"reader_data_airT.outData"		"lwrb.inAirTemperatureValues"
+					"reader_data_airT.outData"		"lwrb.inSoilTempratureValues"
+					"reader_data_RH.outData"		"lwrb.inHumidityValues"
+					"reader_data_CI.outData"		"lwrb.inClearnessIndexValues"
+					"reader_sky.outRaster"			"lwrb.inSkyview"          
+					"vreader_station.geodata"		"lwrb.inStations"
+					"lwrb.outHMlongwaveDownwelling"	"writer_down.inData"
+					"lwrb.outHMlongwaveUpwelling"	"writer_up.inData"
+					}
+			}
+	}
+

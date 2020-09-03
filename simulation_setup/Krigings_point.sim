@@ -1,0 +1,85 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+// start and end date of the simulation
+def startDate= "2018-02-07 23:00"
+def endDate="2018-02-07 23:00"
+
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model(while: "reader_data.doProcess" ) {
+   components {
+    
+        "reader_data"            	       "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+        
+        "vreader_station"                   "org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader" 
+        
+        "vinterpolate_station"                   "org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader" 
+           
+      
+        "kriging"                           "krigingsPointCase.Krigings"  
+
+        
+        "writer_interpolated"               "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 
+        
+            
+         
+   }
+
+  
+   parameter{
+   
+        // parameter of the reader components 
+        "reader_data.file"             "${home}/data/Basilicata/OMS/temperature.csv"
+        "reader_data.idfield"          "ID"  
+        "reader_data.tStart"           "${startDate}"
+        "reader_data.tEnd"             "${endDate}"
+        "reader_data.tTimestep"          60
+        "reader_data.fileNovalue"      "-9999"
+        
+
+        
+        "vreader_station.file"                       "${home}/data/Basilicata/pluviometriBAS.shp" 
+        
+        "vinterpolate_station.file"                       "${home}/data/Sele/centroidi_sele_quote_stazioni_ok.shp"      
+         
+
+        
+        
+        
+		"kriging.fStationsid"            "ID"
+		"kriging.fStationsZ"			 "HSLM"
+		"kriging.fInterpolateid"         "DN"
+		//"kriging.inNumCloserStations"     4
+
+
+		"kriging.pSemivariogramType"   "linear"
+
+
+        "kriging.range" 							49540.85603
+        "kriging.nugget" 			  				-0.285176585
+        "kriging.sill" 								2.249785825
+        
+        // parameter of the writing component   
+        "writer_interpolated.file"                   "${home}/output/Sele/kriging/kriging_interpolated.csv" 
+        "writer_interpolated.tStart"                 "${startDate}"
+        "writer_interpolated.tTimestep"              60
+        
+   }
+    connect {
+        
+       "reader_data.outData"                         "kriging.inData"
+       
+        "vreader_station.geodata"                "kriging.inStations"  
+        "vinterpolate_station.geodata"                "kriging.inInterpolate"   
+        
+       "kriging.outData"            		    "writer_interpolated.inData"  
+
+
+   }
+
+ }
+}
+
+

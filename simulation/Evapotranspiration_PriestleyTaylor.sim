@@ -1,0 +1,84 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+def basin = "RioRessi"
+def startDate	=	"2012-08-01 00:00"
+def endDate		=	"2019-05-10 23:00"
+
+/*def basin = "ReDellaPietra"
+def startDate	=	"2018-06-27 11:00"
+def endDate		=	"2018-12-11 12:00"*/
+def basinID = 1
+def timestep = 60
+OMS3.sim {
+	resource "$oms_prj/lib"    
+	model(while:"readerAirTemperature.doProcess") {
+		components {
+			"readerAirTemperature"			"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"readerNetRadiation"            "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"readerAtmosphericPressure"     "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"readerSoilHeatFlux"          	"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"	
+			"priestleyTaylor"               "etpPointCase.OmsPriestleyTaylor"     
+			"writerLatentHeatPT"			"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"      
+			"writerEvapotranspirationPT"	"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"      			         
+			}  
+			parameter{        
+				
+				// PARAMETERS
+				"priestleyTaylor.alpha"						1.26
+		        "priestleyTaylor.soilFluxParameterDay"		0.35
+		        "priestleyTaylor.soilFluxParameterNight"	0.75
+        		"priestleyTaylor.doHourly"					true
+        		"priestleyTaylor.defaultAtmosphericPressure"94.28
+		        "priestleyTaylor.temporalStep"				"${timestep}"
+        		"priestleyTaylor.tStartDate"				"${startDate}"
+        		
+        		// READERS
+				"readerAirTemperature.file"					"${home}/data/${basin}/${basinID}/${basin}_TEMP.csv"
+				"readerAirTemperature.idfield"      		"ID"  
+				"readerAirTemperature.tStart"				"${startDate}"
+				"readerAirTemperature.tEnd"					"${endDate}"
+				"readerAirTemperature.tTimestep"			"${timestep}"
+				"readerAirTemperature.fileNovalue"			"-9999.0"        
+				
+				"readerNetRadiation.file"          			"${home}/data/${basin}/${basinID}/${basin}_NetRadiation.csv"
+				"readerNetRadiation.idfield"      			"ID"
+				"readerNetRadiation.tStart"        			"${startDate}"
+				"readerNetRadiation.tEnd"					"${endDate}"
+				"readerNetRadiation.tTimestep"				"${timestep}"
+				"readerNetRadiation.fileNovalue"			"-9999.0"	
+			
+				"readerAtmosphericPressure.file"    		"${home}/data/${basin}/${basinID}/${basin}_PRES.csv"
+				"readerAtmosphericPressure.idfield"     	"ID"  
+				"readerAtmosphericPressure.tStart"      	"${startDate}"
+				"readerAtmosphericPressure.tEnd"        	"${endDate}"
+				"readerAtmosphericPressure.tTimestep"   	"${timestep}"
+				"readerAtmosphericPressure.fileNovalue" 	"-9999.0"       
+				
+			/*	"readerSoilHeatFlux.file"         			"${home}/data/${basin}/${basinID}/${basin}_PRES.csv"
+				"readerSoilHeatFlux.idfield"      			"ID"  
+				"readerSoilHeatFlux.tStart"       			"${startDate}"
+				"readerSoilHeatFlux.tEnd"         			"${endDate}"
+				"readerSoilHeatFlux.tTimestep"    			"${timestep}"
+				"readerSoilHeatFlux.fileNovalue"  			"-9999"       */                                             
+			
+				// WRITERS
+				"writerLatentHeatPT.file"					"${home}/data/${basin}/${basinID}/${basin}_latentHeat_PT126.csv" 
+				"writerLatentHeatPT.tStart"					"${startDate}"
+				"writerLatentHeatPT.tTimestep"				"${timestep}"
+				
+				"writerEvapotranspirationPT.file"			"${home}/data/${basin}/${basinID}/${basin}_ET_PT126.csv" 
+				"writerEvapotranspirationPT.tStart"			"${startDate}"
+				"writerEvapotranspirationPT.tTimestep"		"${timestep}"
+				}
+				connect {                
+					"readerAirTemperature.outData"			"priestleyTaylor.inAirTemperature"
+					"readerNetRadiation.outData"			"priestleyTaylor.inNetRadiation"
+					"readerAtmosphericPressure.outData"		"priestleyTaylor.inAtmosphericPressure"	
+					//"readerSoilHeatFlux.outData"			"priestleyTaylor.inSoilFlux"	
+					"priestleyTaylor.outLatentHeatPt"		"writerLatentHeatPT.inData"
+					"priestleyTaylor.outEvapotranspirationPt""writerEvapotranspirationPT.inData"
+					}					
+			}
+	}
+

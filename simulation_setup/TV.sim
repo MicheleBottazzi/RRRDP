@@ -1,0 +1,68 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+def month=6
+// start and end date of the simulation
+def startDate= "2014-02-15 10:00"
+def endDate="2014-02-15 10:00"
+
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model(while: "reader_distances.doProcess" ) {
+   components {
+    
+        // components to be called: reader input data, lwrb and writer output data
+        "reader_distances"            "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"  
+         "reader_variogram"            "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"      
+        "TV"                          "theoreticalVariogram.TheoreticalVariogram"
+        "writer_semivariance"         "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 
+            
+         
+   }
+
+  
+   parameter{
+   
+        "reader_distances.file"             "${home}/output/mary/distances_T.csv" 
+        "reader_distances.idfield"          "ID"  
+        "reader_distances.tStart"           "${startDate}"
+        "reader_distances.tEnd"             "${endDate}"
+        "reader_distances.tTimestep"          60
+        "reader_distances.fileNovalue"      "-9999.0"
+        
+        "reader_variogram.file"             "${home}/output/mary/EV_T.csv" 
+        "reader_variogram.idfield"          "ID"  
+        "reader_variogram.tStart"           "${startDate}"
+        "reader_variogram.tEnd"             "${endDate}"
+        "reader_variogram.tTimestep"          60
+        "reader_variogram.fileNovalue"      "-9999.0"
+        
+            
+		"TV.modelName"   "linear"
+		
+
+
+        "TV.range" 								49540.85603
+        "TV.nugget" 			  				-0.285176585
+        "TV.sill" 								2.249785825
+    
+   
+  
+        "writer_semivariance.file"                 "${home}/output/TV_exp_T.csv" 
+        "writer_semivariance.tStart"               "${startDate}"
+        "writer_semivariance.tTimestep"            60
+        
+   }
+    connect {
+        
+        "reader_distances.outData"             	"TV.inDistanceValues"  
+        "reader_variogram.outData"             	"TV.inExperimentalVariogramValues"         
+        "TV.outHMtheoreticalVariogram"           "writer_semivariance.inData"
+
+   }
+
+ }
+}
+
+

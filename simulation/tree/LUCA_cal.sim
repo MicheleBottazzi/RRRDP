@@ -1,0 +1,88 @@
+import static oms3.SimBuilder.instance as OMS3
+
+/*
+ * Luca calibration.
+ */
+OMS3.luca(name: "EFC-luca_NOCE14",
+		  path: "./data/ReDellaPietra/topoReDellaPietra.csv",
+           simpath: "./simulation/tree/") {
+	build()
+	
+	graph(traverser: "downstream.all"){
+		
+		parameter(file: "$oms_prj/data/ReDellaPietra/mixed_params.csv") {
+		}
+		
+	}
+
+    run_start          "2018-08-01"
+    calibration_start  "2018-08-01"
+    run_end            "2018-09-07"
+    rounds            1                    // calibration rounds, default 1
+
+    // step definitions
+    step {                     
+        parameter {
+                
+                //range ok
+                alfa_r					(lower:0.5, upper:1.5,calib_strategy:MEAN) 
+                //range ok
+				alfa_s					(lower:0.01, upper:1.5,calib_strategy:MEAN)
+				
+				
+				//range ok 
+ 				meltingTemperature		(lower:0.0, upper:3.0,calib_strategy:MEAN)
+ 				//range ok 
+				combinedMeltingFactor  (lower:0.01, upper:1.0,calib_strategy:MEAN)
+				//range ok 
+                freezingFactor         (lower:0.0001, upper:0.1,calib_strategy:MEAN)
+                //range ok
+                radiationFactor        (lower:1.0E-5, upper:1.0E-4,calib_strategy:MEAN)
+                //range ok  
+                alfa_l                 (lower:0.3, upper:0.9,calib_strategy:MEAN)
+                
+                //range ok ma puoi cambiarli 
+                kc_canopy_out				 (lower:0.1, upper:2,calib_strategy:MEAN)
+                
+                
+                //range che puoi cambiare
+                s_RootZoneMax       		 (lower:100, upper:500,calib_strategy:MEAN)
+                //range che puoi cambiare
+	    		Pmax						 (lower:0.1, upper:10,calib_strategy:MEAN)
+	    		//range che puoi cambiare
+	    		b_rz						 (lower:3, upper:30,calib_strategy:MEAN)
+	    		//range che puoi cambiare
+	            pB						 	 (lower:0.1, upper:0.3,calib_strategy:MEAN)
+	            
+	            //range che puoi cambiare
+	            a_ro						(lower:0.001, upper:10,calib_strategy:MEAN)
+	            //range che puoi cambiare
+	            b_ro						(lower:3, upper:80,calib_strategy:MEAN)
+	            //range che puoi cambiare
+	            Smax_ro						(lower:10, upper:100,calib_strategy:MEAN)
+	            
+	            //muskingum
+	            x							(lower:0.1, upper:0.5,calib_strategy:MEAN)
+	            
+	            uc							(lower:0.7, upper:2.1,calib_strategy:MEAN)
+	            
+	            //range che puoi cambiare
+	            a							 (lower:0.001, upper:10,calib_strategy:MEAN)
+	            //range che puoi cambiare
+	            b							 (lower:3, upper:80,calib_strategy:MEAN)
+	            //range che puoi cambiare
+	            Smax						 (lower:50, upper:1500,calib_strategy:MEAN)
+	            
+
+	            
+        }
+    
+        objfunc(method:KGE, timestep:RAW,invalidDataValue:-9999) {
+            sim(file:"$oms_prj/output/Noce/Calibrazione/Idrogramma_3_Noc.csv", table:"table", column:"value_3")
+            obs(file:"$oms_prj/data/Noce/Noce_calibrazione.csv", table:"table", column:"value_3")
+        }
+        max_exec 50
+    }
+
+
+}

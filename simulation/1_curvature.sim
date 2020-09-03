@@ -1,0 +1,54 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+//def basin = "RioRessi"
+def basin = "ReDellaPietra"
+
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model() {
+ 
+ // Le curvature rappresentano la deviazione del vettore gradiente per
+ // unità di lunghezza lungo particolari curve tracciate sulla superficie in
+ // esame f(x,y).
+ // La Curvatura Longitudinale rappresenta la deviazione del
+ // gradiente andando da valle verso monte seguendo l’inviluppo dei
+ // gradienti. È negativa se il gradiente aumenta.
+ // La Curvatura Piana si ottiene sezionando la superficie con un piano
+ // parallelo al piano (x,y) ed è la variazione dei vettori tangenti alle linee
+ // di livello passanti per il punto in esame. Misura la convergenza (se
+ // > 0) o la divergenza (se < 0) del flusso.
+ // La Curvatura Tangenziale è determinata sulla curva di
+ // intersezione tra un piano perpendicolare alla direzione del gradiente e
+ // tangente alle linee di livello nel punto considerato.
+ // Curvatura tangente e piana sono tra loro proporzionali e la loro
+ // distribuzione spaziale è la stessa.
+  
+ //  La componente permette di calcolare questi 3 tipi di curvature come 3 diverse mappe di output.
+ 
+   components {
+        "reader_pit"            	  		"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "curvature"			  				"org.jgrasstools.hortonmachine.modules.geomorphology.curvatures.OmsCurvatures"
+        "writer_longitudinale"            	  	"org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+        "writer_planare"            	  	"org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+		"writer_tangenziale"            	  "org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+   }
+   parameter{
+   		// pit filler intput
+         "reader_pit.file"                      "${home}/output/${basin}Out/${basin}Pit.asc"
+         // 3 file output delle curvature: longitudinale, planare a tangenziale
+         "writer_longitudinale.file"					"${home}/output/${basin}Out/${basin}_c_longitudinale.asc"
+         "writer_planare.file"							"${home}/output/${basin}Out/${basin}_c_planare.asc"
+         "writer_tangenziale.file"						"${home}/output/${basin}Out/${basin}_c_tangenziale.asc"
+   }
+    connect {
+        "reader_pit.outRaster"                 		"curvature.inElev"
+        "curvature.outProf"			   			 "writer_longitudinale.inRaster"
+        "curvature.outPlan"			   			 "writer_planare.inRaster"
+        "curvature.outTang"			   			 "writer_tangenziale.inRaster"
+   }
+ }
+}
+
+

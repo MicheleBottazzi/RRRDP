@@ -1,0 +1,71 @@
+import static oms3.SimBuilder.instance as OMS3
+
+def basin = "ReDellaPietra"
+
+//def startDate	=	"2012-08-20"
+//def endDate		=	"2016-11-23"
+
+def startDate	=	"2018-06-27 11:00"
+def endDate		=	"2018-11-20 00:00"
+def typeET = "SO"
+def typeOF = "KGE"
+/*
+ * Luca calibration.
+ */
+OMS3.luca(name: "EFC-luca_250_1500_${basin}_${typeET}_${typeOF}",
+		  path: "./data/${basin}/topo${basin}.csv",
+           simpath: "./simulation_${basin}/simulation_calibrazione/") {
+	
+	graph(traverser: "downstream.all"){
+		
+		parameter(file: "$oms_prj/data/${basin}/params-r0s0.csv") {
+		}
+	}
+
+  /*  run_start          "2012-08-20"
+    calibration_start  "2012-08-20"
+    run_end            "2016-12-11"*/
+    
+    run_start          "2018-06-27 11:00"
+    calibration_start  "2018-06-27 11:00"
+    run_end            "2018-11-20 00:00"
+    rounds            1                 //   calibration rounds, default 1
+   //  step definitions
+    step {                     
+        parameter {
+            
+               alfa_r					(lower:0.5, upper:1.5,calib_strategy:MEAN) 
+				alfa_s					(lower:0.01, upper:1.5,calib_strategy:MEAN)
+ 				meltingTemperature		(lower:0.0, upper:3.0,calib_strategy:MEAN)
+				combinedMeltingFactor  	(lower:0.01, upper:1.0,calib_strategy:MEAN) 
+                freezingFactor         	(lower:0.0001, upper:0.1,calib_strategy:MEAN)
+                radiationFactor        	(lower:1.0E-5, upper:1.0E-4,calib_strategy:MEAN)
+                alfa_l                 	(lower:0.3, upper:0.9,calib_strategy:MEAN)
+                
+                kc_canopy				(lower:0.1, upper:1,calib_strategy:MEAN)
+
+	            pB_soil					(lower:0.1, upper:0.4,calib_strategy:MEAN)
+				a	 					(lower:0.1, upper:10,calib_strategy:MEAN)
+	    		b						(lower:3, upper:80,calib_strategy:MEAN)
+                s_RootZoneMax       	(lower:50, upper:500,calib_strategy:MEAN)
+	            
+	            c						(lower:0.05, upper:0.3,calib_strategy:MEAN)
+	            d						(lower:3, upper:80,calib_strategy:MEAN)
+	            s_RunoffMax			    (lower:10, upper:100,calib_strategy:MEAN)
+	            
+				e						 (lower:0.001, upper:10,calib_strategy:MEAN)
+	            f						 (lower:3, upper:80,calib_strategy:MEAN)
+	            s_GroundWaterMax		 (lower:100, upper:500,calib_strategy:MEAN)
+	            
+	            x						 (lower:0.1, upper:0.5,calib_strategy:MEAN)
+	            uc						 (lower:0.7, upper:1.5,calib_strategy:MEAN)
+        
+        }
+    
+        objfunc(method:KGE, timestep:RAW,invalidDataValue:-9999) {
+        	sim(file:"$oms_prj/output/${basin}Out/Calibrazione/Idrogramma_2_${basin}_${typeET}_${typeOF}.csv", table:"table", column:"value_2")
+            obs(file:"$oms_prj/data/${basin}/2/${basin}_FLOW.csv", table:"table", column:"val_2")
+        }
+        max_exec 250
+    }
+}

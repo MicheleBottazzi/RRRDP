@@ -1,0 +1,46 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+// start and end date of the simulation
+def startDate= "2010-01-01 00:00"
+
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model() {
+   components {  
+   	
+   		// formatter of data
+        "formatter"                                   "dataHandler.DataHendler"    
+   }
+
+   parameter{
+   
+   		// path to input data to be formatted
+        "formatter.pathInputData"		"${home}/data/OMSdf_WIND_QC.csv"
+        
+        // path to formtted output data
+		"formatter.pathOutputData"		"${home}/data/OMSdf_WIND_QC_F0RMATTED.csv"
+		
+		"formatter.startDate"   		"${startDate}"
+		"formatter.tTimestep"  			60
+		
+		// separator of data
+		"formatter.separetor"			","
+		
+		// number of columns before the data value
+		"formatter.numberOfColumns"     1
+		
+		
+		"formatter.fileNovalue"      	"-9999"
+
+   }
+    connect {
+
+   }
+
+ }
+}
+
+

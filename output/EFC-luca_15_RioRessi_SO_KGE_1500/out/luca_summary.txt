@@ -1,0 +1,498 @@
+************************************************
+*          Luca Calibration Summary            *
+************************************************
+
+# Rounds = 1
+# Steps = 1
+
+Input Information
+	Model Executable: grap_attempt
+	Parameter File Name = /home/drugo/Sim/RRRDP/data/RioRessi/params-r0s0.csv
+
+Model Run Period  : 	January 01,2015 - December 31,2015
+Calibration Period: 	January 01,2015 - December 31,2015
+
+
+Output Information
+	Output Folder: /home/drugo/Sim/RRRDP/output/EFC-luca_15_RioRessi_SO_KGE_1500/out
+
+-------------------------------
+Initial Setup for Step 1
+-------------------------------
+
+>>> Parameter Name: alfa_r
+
+  mean  was used for calibration.
+  Lower Bound = 0.5		 Actual Lower Bound 0.5
+  Upper Bound = 1.5		 Actual Upper Bound 1.5
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	1.000000		true
+	Mean	1.0
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: alfa_s
+
+  mean  was used for calibration.
+  Lower Bound = 0.01		 Actual Lower Bound 0.009999999999999787
+  Upper Bound = 1.5		 Actual Upper Bound 1.5
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	1.000000		true
+	Mean	1.0
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: meltingTemperature
+
+  mean  was used for calibration.
+  Lower Bound = 0.0		 Actual Lower Bound 0.0
+  Upper Bound = 3.0		 Actual Upper Bound 3.0
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	2.000000		true
+	Mean	2.0
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: combinedMeltingFactor
+
+  mean  was used for calibration.
+  Lower Bound = 0.01		 Actual Lower Bound 0.009999999999999787
+  Upper Bound = 1.0		 Actual Upper Bound 1.0
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	0.253100		true
+	Mean	0.2530999999999999
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: freezingFactor
+
+  mean  was used for calibration.
+  Lower Bound = 1.0E-4		 Actual Lower Bound 9.999999999976694E-5
+  Upper Bound = 0.1		 Actual Upper Bound 0.09999999999999964
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	0.008000		true
+	Mean	0.007999999999999119
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: radiationFactor
+
+  mean  was used for calibration.
+  Lower Bound = 1.0E-5		 Actual Lower Bound 9.999999999621423E-6
+  Upper Bound = 1.0E-4		 Actual Upper Bound 9.999999999976694E-5
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	0.000080		true
+	Mean	8.030000000047721E-5
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: alfa_l
+
+  mean  was used for calibration.
+  Lower Bound = 0.3		 Actual Lower Bound 0.3000000000000007
+  Upper Bound = 0.9		 Actual Upper Bound 0.9000000000000004
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	0.690000		true
+	Mean	0.6899999999999995
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: kc_canopy
+
+  mean  was used for calibration.
+  Lower Bound = 0.1		 Actual Lower Bound 0.09999999999999964
+  Upper Bound = 1.0		 Actual Upper Bound 1.0
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	0.200000		true
+	Mean	0.1999999999999993
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: s_RootZoneMax
+
+  mean  was used for calibration.
+  Lower Bound = 50.0		 Actual Lower Bound 49.999999999999986
+  Upper Bound = 500.0		 Actual Upper Bound 500.0
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	304.870000		true
+	Mean	304.87
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: a
+
+  mean  was used for calibration.
+  Lower Bound = 0.1		 Actual Lower Bound 0.09999999999999964
+  Upper Bound = 10.0		 Actual Upper Bound 10.000000000000002
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	0.230000		true
+	Mean	0.23000000000000043
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: b
+
+  mean  was used for calibration.
+  Lower Bound = 3.0		 Actual Lower Bound 3.0
+  Upper Bound = 80.0		 Actual Upper Bound 80.0
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	39.300000		true
+	Mean	39.3
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: pB_soil
+
+  mean  was used for calibration.
+  Lower Bound = 0.1		 Actual Lower Bound 0.09999999999999964
+  Upper Bound = 0.4		 Actual Upper Bound 0.40000000000000036
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	0.130000		true
+	Mean	0.13000000000000078
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: c
+
+  mean  was used for calibration.
+  Lower Bound = 0.05		 Actual Lower Bound 0.05000000000000071
+  Upper Bound = 0.3		 Actual Upper Bound 0.3000000000000007
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	0.170000		true
+	Mean	0.16999999999999993
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: d
+
+  mean  was used for calibration.
+  Lower Bound = 3.0		 Actual Lower Bound 3.0
+  Upper Bound = 80.0		 Actual Upper Bound 80.0
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	7.000000		true
+	Mean	7.0
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: s_RunoffMax
+
+  mean  was used for calibration.
+  Lower Bound = 10.0		 Actual Lower Bound 10.0
+  Upper Bound = 100.0		 Actual Upper Bound 100.0
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	50.000000		true
+	Mean	50.0
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: e
+
+  mean  was used for calibration.
+  Lower Bound = 0.001		 Actual Lower Bound 9.999999999994458E-4
+  Upper Bound = 10.0		 Actual Upper Bound 9.999999999999998
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	5.150000		true
+	Mean	5.15
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: f
+
+  mean  was used for calibration.
+  Lower Bound = 3.0		 Actual Lower Bound 3.0
+  Upper Bound = 80.0		 Actual Upper Bound 80.0
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	57.100000		true
+	Mean	57.099999999999994
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: s_GroundWaterMax
+
+  mean  was used for calibration.
+  Lower Bound = 100.0		 Actual Lower Bound 100.0
+  Upper Bound = 2500.0		 Actual Upper Bound 2500.0
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	551.930000		true
+	Mean	551.93
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: x
+
+  mean  was used for calibration.
+  Lower Bound = 0.1		 Actual Lower Bound 0.09999999999999964
+  Upper Bound = 0.5		 Actual Upper Bound 0.5
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	0.130000		true
+	Mean	0.13000000000000078
+	Initial Parameter OF	0.24704427578631127
+
+>>> Parameter Name: uc
+
+  mean  was used for calibration.
+  Lower Bound = 0.7		 Actual Lower Bound 0.6999999999999993
+  Upper Bound = 1.5		 Actual Upper Bound 1.5
+
+  Parameter Values:
+	#	init value		calibrated?
+	0	1.080000		true
+	Mean	1.08
+	Initial Parameter OF	0.24704427578631127
+
+>>> SCE Control Parameter Information
+	Number of complexes in the initial population: 2
+	Number of points in each complex: 41
+	Number of points in a sub-complex: 21
+	Number of evolution steps before shuffling: 41
+	Mininum number of complexes required: 1
+	Maximum number of model executions: 500
+	Shuffling loops in which the objective function value must change by given % before optimization is terminated: 5
+	Percentage for the objective function value: 0.01%
+
+>>> Objective Function (OF) Information
+	The number of objective functions: 1
+	-- OF #1 with weight = 1.0
+		The objective function is: MAXIMIZED
+		Objective Function Type: kge 
+		Time Step: raw
+		Period: Feb to Jan
+		Simulated Variable: value_1
+		Observed Variable: value_1
+
+
+
+********************************************
+ Calibrated Parameter Values
+********************************************
+
+
+-------------------------------
+Round 1 Step 1
+-------------------------------
+
+Objective Function Values for round 1 = 0.7560677365461426
+>>> Parameter Name: alfa_r
+
+Lower Bound = 0.5
+Upper Bound = 1.5
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		0.941521
+	Mean			0.9415212871858873
+>>> Parameter Name: alfa_s
+
+Lower Bound = 0.01
+Upper Bound = 1.5
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		1.161878
+	Mean			1.1618780418753154
+>>> Parameter Name: meltingTemperature
+
+Lower Bound = 0.0
+Upper Bound = 3.0
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		0.544095
+	Mean			0.5440948306386097
+>>> Parameter Name: combinedMeltingFactor
+
+Lower Bound = 0.01
+Upper Bound = 1.0
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		0.399796
+	Mean			0.3997959433769278
+>>> Parameter Name: freezingFactor
+
+Lower Bound = 1.0E-4
+Upper Bound = 0.1
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		0.051817
+	Mean			0.051817058034203
+>>> Parameter Name: radiationFactor
+
+Lower Bound = 1.0E-5
+Upper Bound = 1.0E-4
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		0.000078
+	Mean			7.849710261886855E-5
+>>> Parameter Name: alfa_l
+
+Lower Bound = 0.3
+Upper Bound = 0.9
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		0.838487
+	Mean			0.8384870862365368
+>>> Parameter Name: kc_canopy
+
+Lower Bound = 0.1
+Upper Bound = 1.0
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		0.366064
+	Mean			0.36606387757837666
+>>> Parameter Name: s_RootZoneMax
+
+Lower Bound = 50.0
+Upper Bound = 500.0
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		222.962022
+	Mean			222.96202233684613
+>>> Parameter Name: a
+
+Lower Bound = 0.1
+Upper Bound = 10.0
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		8.907093
+	Mean			8.907093344742544
+>>> Parameter Name: b
+
+Lower Bound = 3.0
+Upper Bound = 80.0
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		49.596025
+	Mean			49.59602487895786
+>>> Parameter Name: pB_soil
+
+Lower Bound = 0.1
+Upper Bound = 0.4
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		0.198672
+	Mean			0.19867231630285076
+>>> Parameter Name: c
+
+Lower Bound = 0.05
+Upper Bound = 0.3
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		0.120456
+	Mean			0.12045646236683005
+>>> Parameter Name: d
+
+Lower Bound = 3.0
+Upper Bound = 80.0
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		12.100571
+	Mean			12.100571418770393
+>>> Parameter Name: s_RunoffMax
+
+Lower Bound = 10.0
+Upper Bound = 100.0
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		49.867000
+	Mean			49.8670001019524
+>>> Parameter Name: e
+
+Lower Bound = 0.001
+Upper Bound = 10.0
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		6.506886
+	Mean			6.506885964000945
+>>> Parameter Name: f
+
+Lower Bound = 3.0
+Upper Bound = 80.0
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		7.369354
+	Mean			7.3693543972421836
+>>> Parameter Name: s_GroundWaterMax
+
+Lower Bound = 100.0
+Upper Bound = 2500.0
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		530.690890
+	Mean			530.6908900811723
+>>> Parameter Name: x
+
+Lower Bound = 0.1
+Upper Bound = 0.5
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		0.322303
+	Mean			0.32230328382873097
+>>> Parameter Name: uc
+
+Lower Bound = 0.7
+Upper Bound = 1.5
+
+Number of iterations in Step = 500
+Parameter Values:
+	#		Round 0 data
+	0		0.977189
+	Mean			0.9771891589282902
+************************************************
+*  DONE.
+************************************************
+

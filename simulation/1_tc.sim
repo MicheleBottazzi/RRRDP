@@ -1,0 +1,69 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+//def basin = "RioRessi"
+def basin = "ReDellaPietra"
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model() {
+ 
+ // Permettono di attribuire ad ogni pixel una delle 9 classi topografiche,
+ // ottenute con l’intersezione dei tre
+ // tipi di curvature longitudinali e dei tre di curvature planari.
+
+ 
+ 
+   components {
+  
+  
+        "reader_c_longitudinale"            	  		"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "reader_c_tangenziale"            	  		"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        
+        "tc"			  				"org.jgrasstools.hortonmachine.modules.hillslopeanalyses.tc.OmsTc"
+        
+        "writer_tc3"            	  	"org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+        "writer_tc9"            	  	"org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+
+
+
+
+            
+         
+   }
+
+  
+   parameter{
+   
+   		// lettura curvature longitudinale e tangenziale
+         "reader_c_longitudinale.file"                      "${home}/output/${basin}Out/${basin}_c_longitudinale.asc"
+         "reader_c_tangenziale.file"                      "${home}/output/${basin}Out/${basin}_c_tangenziale.asc"
+  
+  		
+  		// Soglie che definiscono la condizione di planarità.
+        "tc.pProfthres"								 0.001
+    	"tc.pTanthres" 							     0.001
+
+         // scrittura output con 3 e 9 classi topografiche
+         "writer_tc3.file"							"${home}/output/${basin}Out/${basin}_tc3.asc"
+         "writer_tc9.file"							"${home}/output/${basin}Out/${basin}_tc9.asc"
+  
+
+
+        
+   }
+    connect {
+        
+        "reader_c_longitudinale.outRaster"                 		"tc.inProf"
+        "reader_c_tangenziale.outRaster"                 		 "tc.inTan"
+        "tc.outTc9"			   			 "writer_tc9.inRaster"
+        "tc.outTc3"			   			 "writer_tc3.inRaster"
+     
+        
+  
+   }
+
+ }
+}
+
+

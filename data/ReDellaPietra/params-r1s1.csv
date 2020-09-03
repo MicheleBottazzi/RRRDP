@@ -1,0 +1,53 @@
+@S,Parameter
+ modifed_at,Wed Jun 20 16:50:26 MDT 2012
+ created at,Thu Jun 25 13:44:42 MDT 2009
+ adjusted by,olaf
+ created by,george
+ round,1
+ step,1
+ step_params,a_ro b_ro Smax_ro a b Smax
+ calibration_start,Wed Aug 01 00:00:00 CEST 2018
+ luca_name,EFC-luca_RE
+ model_class,grap_attempt
+ param_files,/home/drugo/Sim/hoppy/data/ReDellaPietra/mixed_params.csv
+
+@P,alfa_r,1.3993
+
+@P,alfa_s,1.01852
+
+@P,meltingTemperature,0.78288
+
+@P,combinedMeltingFactor,0.114943
+
+@P,freezingFactor,0.007800
+
+@P,radiationFactor,8.700929182303696E-5
+
+@P,alfa_l,0.722
+
+@P,kc_canopy_out,0.25
+
+@P,s_RootZoneMax,144.30
+
+@P,Pmax,2.011
+
+@P,b_rz,28.3472
+
+@P,pB,0.4028
+
+@P,a_ro,7.684037982562655
+
+@P,b_ro,3.355737819163984
+
+@P,Smax_ro,19.74168901888183
+
+@P,a,6.221915287254243
+
+@P,b,42.056229200191815
+
+@P,Smax,894.4994380504035
+
+@P,x,0.354
+
+@P,uc,1.068
+

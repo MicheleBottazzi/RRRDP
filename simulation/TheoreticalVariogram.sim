@@ -1,0 +1,46 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+def startDate	=	"2007-01-01 00:00"
+def endDate		=	"2008-12-31 22:00"
+OMS3.sim {
+	resource "$oms_prj/lib"
+	model(while: "reader_distances.doProcess" ) {
+		components {    			
+			"reader_distances"            "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"          
+			"reader_variogram"            "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"               
+			"TV"                          "theoreticalVariogram.TheoreticalVariogram"        
+			"writer_semivariance"         "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"                      
+			}  
+			parameter{   
+				"reader_distances.file"             "${home}/output/distances.csv" 
+				"reader_distances.idfield"          "ID"  
+				"reader_distances.tStart"           "${startDate}"
+				"reader_distances.tEnd"             "${endDate}"
+				"reader_distances.tTimestep"          60
+				"reader_distances.fileNovalue"      "-9999"        
+				
+				"reader_variogram.file"             "${home}/output/EV.csv" 
+				"reader_variogram.idfield"          "ID"  
+				"reader_variogram.tStart"           "${startDate}"
+				"reader_variogram.tEnd"             "${endDate}"
+				"reader_variogram.tTimestep"          60
+				"reader_variogram.fileNovalue"      "-9999"				                    
+				
+				"TV.modelName"   "bessel" 
+				"TV.range"      963.7392200521535
+				"TV.nugget"     7.367035750374534E-14
+				"TV.sill"      	24.740076671669062         
+				
+				"writer_semivariance.file"                 "${home}/output/NOME_output.csv" 
+				"writer_semivariance.tStart"               "${startDate}"
+				"writer_semivariance.tTimestep"            60       
+				}
+				connect {        
+					"reader_distances.outData"             	"TV.inDistanceValues"  
+					"reader_variogram.outData"             	"TV.inExperimentalVariogramValues"         
+					"TV.outHMtheoreticalVariogram"           "writer_semivariance.inData"
+					}
+			}
+	}
+

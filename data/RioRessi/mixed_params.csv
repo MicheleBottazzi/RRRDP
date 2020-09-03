@@ -1,0 +1,47 @@
+@S,Parameter,
+ created by,george,
+ created at,Thu Jun 25 13:44:42 MDT 2009,
+ adjusted by,olaf,
+ modifed_at,Wed Jun 20 16:50:26 MDT 2012,
+ 
+
+@P, alfa_r,1.3993
+ 
+@P, alfa_s,1.01852
+ 
+@P, meltingTemperature,0.78288
+ 
+@P,combinedMeltingFactor,0.114943
+
+@P,freezingFactor,0.007800
+
+@P,radiationFactor,8.700929182303696E-5
+
+@P,alfa_l,0.722
+
+@P,kc_canopy_out,0.25
+
+@P,s_RootZoneMax,144.30
+
+@P,Pmax,2.011
+
+@P,b_rz,28.3472
+
+@P,pB,0.4028
+
+@P,a_ro,6.300
+
+@P,b_ro,14.109
+
+@P,Smax_ro,53.935
+
+@P,a,90.96652633364846 
+
+@P,b,6.248986788985528
+
+@P,Smax,150.14347081577256
+
+@P,x,0.354
+
+@P,uc,1.068
+

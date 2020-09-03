@@ -1,0 +1,37 @@
+/*
+ * Hello 'world' example.
+ *   A component printing a greeting.
+ */
+import static oms3.SimBuilder.instance as OMS3
+def basin = "RioRessi"
+//def basin = "ReDellaPietra"
+
+def startDate	=	"2012-01-09"
+def endDate		=	"2016-12-11"
+OMS3.graph(path: "./data/${basin}/topo${basin}.csv",
+           simpath: "./simulation_${basin}/simulation_validazione/") {	
+
+    build()
+    
+    graph(traverser: "downstream.all") {
+    	
+        components {
+        }
+        
+		parameter(file: "$oms_prj/output/EFC-luca_RioRessi_So/out/params-r1s1.csv") {
+
+		}
+    }
+    
+            flags {
+
+        "1" "{overwrite}"
+    	//"2" "{overwrite}"
+   // 	"3" "{overwrite}"
+    	//"4" "{overwrite}"
+ 	
+    }
+    
+    
+    
+}

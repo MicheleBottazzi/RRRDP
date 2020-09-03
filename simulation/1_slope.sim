@@ -1,0 +1,50 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+//def basin = "RioRessi"
+def basin = "ReDellaPietra"
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ // Il comando calcola la pendenza della superficie topografica in ogni punto lungo le direzioni di drenaggio.
+ // Questo comando calcola la differenza di quota tra ogni pixel e quello
+ // adiacente immediatamente a valle. Successivamente divide questa
+ // grandezza per la dimensione del pixel, oppure della sua diagonale, a
+ // seconda della posizione reciproca dei due pixel considerati.
+ // Il valore restituito rappresenta quindi la tangente dell’angolo rappresentante la pendenza.
+
+
+ model() {
+   components {
+  
+  
+        "reader_pit"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "reader_flow"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "slope"			  		"org.jgrasstools.hortonmachine.modules.geomorphology.slope.OmsSlope"
+        "writer_slope"            	  "org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+    
+   }
+   parameter{
+   		// 2 file input: pitfiller e flow direction
+         "reader_pit.file"                      "${home}/output/${basin}Out/${basin}Pit.asc"
+         "reader_flow.file"                     "${home}/output/${basin}Out/${basin}_flow_dir.asc"
+         
+
+         // file output slope
+         "writer_slope.file"					"${home}/output/${basin}Out/${basin}_slope.asc"
+
+
+        
+   }
+    connect {
+        
+        "reader_pit.outRaster"                 		"slope.inPit"
+        "reader_flow.outRaster"                 	"slope.inFlow"
+        "slope.outSlope"			   			    "writer_slope.inRaster"
+
+   }
+
+ }
+}
+
+

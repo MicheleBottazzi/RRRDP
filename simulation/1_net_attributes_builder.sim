@@ -1,0 +1,73 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+//def basin = "RioRessi"
+def basin = "ReDellaPietra"
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model() {
+ 
+ // Possiamo ottenere la mappa vettoriale della rete nel nostro bacino di interersse.
+ // Per questo usiamo il comando NetworkAttributesBuilder, che ne estrae anche una serie di utili
+ // attributi.
+ 
+   components {
+  
+  
+        "reader_tca"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "reader_flow"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "reader_net"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "reader_pit"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "net_attributes_builder"      "org.jgrasstools.hortonmachine.modules.network.networkattributes.OmsNetworkAttributesBuilder"       
+        "writer_hack"            	  "org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+        "writer_net"            	  "org.jgrasstools.gears.io.vectorwriter.OmsVectorWriter"
+
+
+            
+         
+   }
+
+  
+   parameter{
+   
+   		// reader aree contribuenti
+         "reader_tca.file"                      "${home}/output/${basin}Out/${basin}_Tca.asc"
+         
+         // reader direzioni di drenaggio corrette con il mark outlet
+         "reader_flow.file"                     "${home}/output/${basin}Out/${basin}_mark_outlet.asc"
+         
+         // reader rete di drenaggio estratta
+         "reader_net.file"                      "${home}/output/${basin}Out/${basin}_network_1200.asc"
+         
+         // reader dem depittato
+         "reader_pit.file"                      "${home}/output/${basin}Out/${basin}Pit.asc"
+
+		// restituisce la numerazione di Hack
+		 "net_attributes_builder.doHack"         true
+         
+         // writer output: numerazione di Hack e vettoriale della rete
+         "writer_hack.file"						"${home}/output/${basin}Out/${basin}_hack_cut.asc"
+         "writer_net.file"						"${home}/output/${basin}Out/${basin}_net_cut.shp"
+
+
+        
+   }
+    connect {
+        
+        "reader_tca.outRaster"                 		"net_attributes_builder.inTca"
+        "reader_flow.outRaster"                     "net_attributes_builder.inFlow"
+        "reader_net.outRaster"                 	    "net_attributes_builder.inNet"
+        "reader_pit.outRaster"                 	    "net_attributes_builder.inDem"
+        
+        
+        
+        "net_attributes_builder.outNet"			     "writer_net.inVector"
+        "net_attributes_builder.outHack"			 "writer_hack.inRaster"
+
+   }
+
+ }
+}
+
+

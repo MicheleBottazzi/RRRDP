@@ -1,0 +1,114 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+def basin = "RioRessi"
+def startDate	=	"2012-08-01 00:00"
+def endDate		=	"2019-05-10 23:00"
+
+/*def basin = "ReDellaPietra"
+def startDate	=	"2018-06-27 11:00"
+def endDate		=	"2018-12-11 12:00"*/
+def basinID = 1
+def timestep = 60
+OMS3.sim {
+     resource "$oms_prj/lib"
+     model(while:"readerAirTemperature.doProcess")	{
+        components {
+				"readerAirTemperature"              			    "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+				"readerWindVelocity"             			        "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+				"readerRelativeHumidity"             		        "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+				"readerNetRadiation"                                "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+				"readerAtmosphericPressure"                         "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+				"readerSoilHeatFlux"                                "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"	
+				"readerSoilMosture"              				    "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"	
+				"penmanMonteithFao"              				    "etpPointCase.OmsPenmanMonteithFAO"
+				"writerLatentHeatFAO"                			    "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"						
+				"writerEvapotranspirationFAO"                       "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"	 
+			}
+			parameter{		
+
+				//	VEGETATION	&	SOIL	COEFFICIENTS
+				"penmanMonteithFao.cropCoefficient"				1.0
+				"penmanMonteithFao.waterWiltingPoint"			0.16097615
+				"penmanMonteithFao.waterFieldCapacity"			0.2826
+				"penmanMonteithFao.rootsDepth"					1.25
+				"penmanMonteithFao.depletionFraction"			0.7
+								
+				//	PARAMETERS
+				"penmanMonteithFao.tStartDate"					"${startDate}"
+				"penmanMonteithFao.temporalStep"				"${timestep}"
+				"penmanMonteithFao.defaultAtmosphericPressure"	94.28
+				"penmanMonteithFao.doHourly"					true
+								
+				//	READERS				
+				"readerAirTemperature.file"						"${home}/data/${basin}/${basinID}/${basin}_TEMP.csv"
+				"readerAirTemperature.idfield"      			"ID"  
+				"readerAirTemperature.tStart"           		"${startDate}"
+				"readerAirTemperature.tEnd"         			"${endDate}"
+				"readerAirTemperature.tTimestep"            	"${timestep}"
+				"readerAirTemperature.fileNovalue"          	"-9999.0"
+								
+				"readerWindVelocity.file"                       "${home}/data/${basin}/${basinID}/${basin}_WIND.csv"	
+				"readerWindVelocity.idfield"                    "ID"		
+				"readerWindVelocity.tStart"                     "${startDate}"
+				"readerWindVelocity.tEnd"                       "${endDate}"
+				"readerWindVelocity.tTimestep"                  "${timestep}"
+				"readerWindVelocity.fileNovalue"                "-9999.0"
+								
+				"readerRelativeHumidity.file"                   "${home}/data/${basin}/${basinID}/${basin}_RH.csv"
+				"readerRelativeHumidity.idfield"                "ID"		
+				"readerRelativeHumidity.tStart"                 "${startDate}"
+				"readerRelativeHumidity.tEnd"                   "${endDate}"
+				"readerRelativeHumidity.tTimestep"              "${timestep}"
+				"readerRelativeHumidity.fileNovalue"            "-9999.0"
+								
+				"readerNetRadiation.file"                  		"${home}/data/${basin}/${basinID}/${basin}_NetRadiation.csv"
+				"readerNetRadiation.idfield"                    "ID"
+				"readerNetRadiation.tStart"                     "${startDate}"
+				"readerNetRadiation.tEnd"                       "${endDate}"
+				"readerNetRadiation.tTimestep"                  "${timestep}"
+				"readerNetRadiation.fileNovalue"                "-9999.0"
+						
+				"readerAtmosphericPressure.file"                "${home}/data/${basin}/${basinID}/${basin}_PRES.csv"
+				"readerAtmosphericPressure.idfield"             "ID"		
+				"readerAtmosphericPressure.tStart"              "${startDate}"
+				"readerAtmosphericPressure.tEnd"                "${endDate}"
+				"readerAtmosphericPressure.tTimestep"           "${timestep}"
+				"readerAtmosphericPressure.fileNovalue"         "-9999.0"
+								
+			/*	"readerSoilHeatFlux.file"                       "${home}/data/${site}/${site}_GHF.csv"	
+                "readerSoilHeatFlux.idfield"                    "val"		
+                "readerSoilHeatFlux.tStart"                     "${startDate}"
+                "readerSoilHeatFlux.tEnd"                       "${endDate}"
+                "readerSoilHeatFlux.tTimestep"                  "${timestep}"
+                "readerSoilHeatFlux.fileNovalue"                "-9999.0"			*/	
+		
+				"readerSoilMosture.file"                        "${home}/data/${basin}/${basinID}/${basin}_SWC.csv"	
+                "readerSoilMosture.idfield"                     "ID"		
+                "readerSoilMosture.tStart"                      "${startDate}"
+                "readerSoilMosture.tEnd"                        "${endDate}"
+                "readerSoilMosture.tTimestep"                   "${timestep}"
+                "readerSoilMosture.fileNovalue"                 "-9999.0"																			
+		
+                //	WRITERS
+                "writerEvapotranspirationFAO.file"				"${home}/data/${basin}/${basinID}/${basin}_ET_FAO.csv"	
+				"writerEvapotranspirationFAO.tStart"			"${startDate}"
+				"writerEvapotranspirationFAO.tTimestep"	        "${timestep}"
+						              
+				"writerLatentHeatFAO.file"						"${home}/data/${basin}/${basinID}/${basin}_latentHeat_FAO.csv"	
+				"writerLatentHeatFAO.tStart"					"${startDate}"
+				"writerLatentHeatFAO.tTimestep"					"${timestep}"
+            }
+            connect	{
+                "readerAirTemperature.outData"					"penmanMonteithFao.inAirTemperature"
+				"readerWindVelocity.outData"					"penmanMonteithFao.inWindVelocity"
+				"readerRelativeHumidity.outData"				"penmanMonteithFao.inRelativeHumidity"
+				"readerNetRadiation.outData"					"penmanMonteithFao.inNetRadiation"
+				"readerAtmosphericPressure.outData"				"penmanMonteithFao.inAtmosphericPressure"
+				//"readerSoilHeatFlux.outData"					"penmanMonteithFao.inSoilFlux"
+				"readerSoilMosture.outData"						"penmanMonteithFao.inSoilMosture"									
+				"penmanMonteithFao.outEvapotranspirationFao"	"writerEvapotranspirationFAO.inData"
+				"penmanMonteithFao.outLatentHeatFao"			"writerLatentHeatFAO.inData"
+			}
+			}
+		}

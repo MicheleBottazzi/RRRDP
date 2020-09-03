@@ -1,0 +1,36 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+def startDate	=	"2007-01-01 00:00"
+def endDate		=	"2008-12-31 22:00"
+OMS3.sim {
+	resource "$oms_prj/lib"
+	model( ) {
+		components {		   			
+			"readerAirTemperature"							"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			"readerNetRadiation"							"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			"pathGenerator"									"pathGenerator.PathGenerator"
+			"writerEtPt"									"org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter" 
+			"EtPriestleyTaylorRaster"						"etp.OmsPriestleyTaylorEtRaster"
+			}
+			parameter{
+				"readerAirTemperature.file"					"${home}/output/Raster_Temperatura.asc" 
+				"readerNetRadiation.file"					"${home}/output/Raster_RadiazioneNetta.asc"   	        
+				
+				"EtPriestleyTaylorRaster.defaultPressure"	101.3
+				"EtPriestleyTaylorRaster.pAlpha"			1.26
+				"EtPriestleyTaylorRaster.pGmorn"			0.35 
+				"EtPriestleyTaylorRaster.pGnight"			0.75
+				"EtPriestleyTaylorRaster.tStartDate"		"${startDate}"				
+				"EtPriestleyTaylorRaster.doHourly"			true   	
+				
+				"writerEtPt.file"							"${home}/output/Evapotraspirazione_Priestley_Taylor_Raster.asc" 
+				}
+				connect {   		
+					"readerAirTemperature.outRaster"		"EtPriestleyTaylorRaster.inAirTemperatureGrid"
+					"readerNetRadiation.outRaster"			"EtPriestleyTaylorRaster.inNetRadiationGrid"
+					"EtPriestleyTaylorRaster.outEtPtGrid"	"writerEtPt.inRaster"
+					}					
+			}
+	}
+
+

@@ -1,0 +1,71 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+//def basin = "RioRessi"
+def basin = "ReDellaPietra"
+
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model() {
+ 
+ // Le direzioni di drenaggio calcolate con l'8 puro possono essere
+ // corrette con un algoritmo che calcola le
+ // direzioni di drenaggio minimizzando la deviazione della direzione del
+ // flusso determinato da quella del flusso reale. Questa deviazione viene
+ // calcolata partendo dal punto a quote maggiori, procedendo verso quote
+ // minori.
+ // La deviazione è calcolata mediante una costruzione triangolare e può
+ // quindi essere espressa come:
+ // Deviazione Angolare   metodo D8-LAD
+ // Distanza Trasversale   metodo D8-LTD
+ // Questo metodo utilizza un parametro \lambda per pesare la correzione.
+ 
+ 
+ 
+ 
+   components {
+  
+  
+        "reader_pit"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "reader_flow"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "drain_dir"			  		"org.jgrasstools.hortonmachine.modules.geomorphology.draindir.OmsDrainDir"
+        "writer_drain_dir"            	  "org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+        "writer_tca"            	  "org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+
+            
+         
+   }
+
+  
+   parameter{
+   
+   		// 2 file input: pit filler e flow direction
+         "reader_pit.file"                      "${home}/output/${basin}Out/${basin}Pit.asc"
+         "reader_flow.file"                     "${home}/output/${basin}Out/${basin}_flow_dir.asc"
+         
+         
+         // metodo D8-LAD
+         
+         //"drain_dir.doLad"                     true
+         //"drain_dir.pLambda"			1
+         
+         // 2 file output: drain direction e Tca
+         "writer_drain_dir.file"				 		"${home}/output/${basin}Out/${basin}_drain_dir.asc"
+         "writer_tca.file"								"${home}/output/${basin}Out/${basin}_Tca.asc"
+
+        
+   }
+    connect {
+        
+        "reader_pit.outRaster"                 		"drain_dir.inPit"
+        "reader_flow.outRaster"                 	"drain_dir.inFlow"       
+        "drain_dir.outFlow"			   			 "writer_drain_dir.inRaster"
+        "drain_dir.outTca"			   			 "writer_tca.inRaster"
+
+   }
+
+ }
+}
+
+

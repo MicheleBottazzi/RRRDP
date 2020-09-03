@@ -1,0 +1,58 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+def basin = 'Ressi'
+
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model() {
+ 
+ // Estrazione del bacino di interesse: 
+ // Copiate le coordinate nei due rispettivi campi
+ // NB: la prima cooridnata in QGIS è la coordinate est (x)
+
+
+   components {
+  
+  
+        "reader_flow"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "outlet"			  		"org.jgrasstools.hortonmachine.modules.demmanipulation.wateroutlet.OmsWateroutlet"
+        "writer_basin"            	  "org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+
+            
+         
+   }
+
+  
+   parameter{
+   
+		//file input direzioni di drenaggio
+         "reader_flow.file"                     "${home}/output/${basin}Out/${basin}_mark_outlet.asc"
+        
+         // input coordinate del punto di chiusura del bacino 
+        // "outlet.pNorth"  5171400  					
+         //"outlet.pEast"   700700
+        // 658805.6,5123192.2
+       
+       	"outlet.pNorth"  5134366.24
+        "outlet.pEast"   647205.99
+         
+         
+         
+         //file output bacino
+         "writer_basin.file"						"${home}/output/Geomorfo/basin_small.asc"
+
+        
+   }
+    connect {
+
+        "reader_flow.outRaster"                 	"outlet.inFlow"
+        "outlet.outBasin"			   			 "writer_basin.inRaster"
+
+   }
+
+ }
+}
+
+

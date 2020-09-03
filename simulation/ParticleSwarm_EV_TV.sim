@@ -1,0 +1,116 @@
+import static oms3.SimBuilder.instance as OMS3
+import static oms3.SimBuilder.*
+def home=oms_prj
+def month  		=	01
+def year  		=	2010
+def variable  	=	"PRES"
+// start and end date of the simulation
+def startDate	=	"${year}-${month}-01 00:00"
+def endDate		=	"${year}-${month}-01 00:00"
+
+ps = OMS3.ps_run(name:"PS_EV_TV",
+    {
+    outputstrategy(dir: "$oms_prj/output/TV", scheme:SIMPLE)
+model(while: "reader_distances.doProcess" ) {
+	
+   components {
+   	// components to be called: reader input data, lwrb and writer output data
+   	"reader_distances"				"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader" 
+   	"reader_semivariance"			"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader" 
+   	"TV"							"theoreticalVariogram.TheoreticalVariogram"
+   }
+   parameter{ 
+   	// parameter of the reader components 
+   	"reader_distances.file"			"${home}/output/Kriging/${variable}/DS_${variable}_${month}_${year}.csv" 
+   	"reader_distances.idfield"		"ID"  
+   	"reader_distances.tStart"		"${startDate}"
+   	"reader_distances.tEnd"			"${endDate}"
+   	"reader_distances.tTimestep"	60
+   	"reader_distances.fileNovalue"	"-9999"
+   	
+   	"reader_semivariance.file"		"${home}/output/Kriging/${variable}/EV_${variable}_${month}_${year}.csv" 
+   	"reader_semivariance.idfield"	"ID"  
+   	"reader_semivariance.tStart"	"${startDate}"
+   	"reader_semivariance.tEnd"		"${endDate}"
+   	"reader_semivariance.tTimestep"	60
+   	"reader_semivariance.fileNovalue""-9999"
+   	       
+   	// "bessel"    "pentaspherical" "circular"
+   	"TV.modelName" 					"bessel"
+   	"TV.range"       				12.0
+   	"TV.nugget"      				0.0
+   	"TV.sill"        				1.678383 
+   	}
+	
+connect {
+	"reader_distances.outData"		"TV.inDistanceValues"  
+	"reader_semivariance.outData"	"TV.inExperimentalVariogramValues"       
+	}
+}
+	// kmax : optional, default 1000
+	kmax    5000
+    // numPart optional default 10
+    numPart 10
+    // all check variables optional, values
+    // below show the defaults.
+    check_after 175
+    check_last  50
+    check_min   30
+    check_delta 1e-8 
+    verbose 1
+    
+    // parameter to optimize
+    parameter {
+    	"TV_range"       (lower:0.0, upper:50000,calib_strategy:MEAN)
+    	"TV_nugget"      (lower:0.0, upper:30,calib_strategy:MEAN)
+    	"TV_sill"        (lower:0.0, upper:500,calib_strategy:MEAN)
+    	}
+    	// objective function
+    	objfunc(method:RMSE,invalidDataValue:-9999) {
+    		sim(data:"TV.result")
+    		obs(data:"TV.observation")
+    		}
+    	}
+	) 
+OMS3.sim_run(name:"TV") {
+	model(while: "reader_distances.doProcess" ) {
+		components {   
+			// components to be called: reader input data, lwrb and writer output data
+			"reader_distances"						"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"  
+			"reader_semivariance"					"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"      
+			"TV"                        			"theoreticalVariogram.TheoreticalVariogram"
+			"writer_semivariance"					"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter" 
+			}
+			parameter{			   
+				"reader_distances.file"             "${home}/output/Kriging/${variable}/DS_${variable}_${month}_${year}.csv" 
+				"reader_distances.idfield"          "ID"  
+				"reader_distances.tStart"           "${startDate}"
+				"reader_distances.tEnd"             "${endDate}"
+				"reader_distances.tTimestep"		60
+				"reader_distances.fileNovalue"      "-9999"
+				
+				"reader_semivariance.file"			"${home}/output/Kriging/${variable}/EV_${variable}_${month}_${year}.csv" 
+				"reader_semivariance.idfield"		"ID" 
+				"reader_semivariance.tStart"		"${startDate}"
+				"reader_semivariance.tEnd"			"${endDate}"
+				"reader_semivariance.tTimestep"		60
+				"reader_semivariance.fileNovalue"	"-9999"
+				        
+            	// "bessel" circular "gaussian"
+            	"TV.modelName"						"bessel"           	
+            	"TV.range"      					ps.model.TV_range
+            	"TV.nugget"     					ps.model.TV_nugget
+            	"TV.sill"      						ps.model.TV_sill         
+            	
+            	"writer_semivariance.file"			"${home}/output/Kriging/${variable}/TV_${month}_${year}.csv" 
+            	"writer_semivariance.tStart"		"${startDate}"
+            	"writer_semivariance.tTimestep"		60        
+            	}
+            	connect {        
+            		"reader_distances.outData"		"TV.inDistanceValues"  
+            		"reader_semivariance.outData"	"TV.inExperimentalVariogramValues"         
+            		"TV.outHMtheoreticalVariogram"	"writer_semivariance.inData"
+            		}
+            	}
+            }
+     

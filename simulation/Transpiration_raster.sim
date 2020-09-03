@@ -1,0 +1,51 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+def startDate	=	"2007-01-01 12:00"
+def endDate		=	"2007-01-01 12:00"
+OMS3.sim {
+	resource "$oms_prj/lib"
+	model( ) {
+		components {		
+			"readerDem"           						"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			"readerAirTemperature"  					"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			"readerShortWaveDirect"  					"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			"readerShortWaveDiffuse"  					"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			"readerLongWave"  							"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			//"readerHumidity"							"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			//"readerWind"								"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			//"readerPressure"  							"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+			//"readerLeafAreaIndex"  						"org.jgrasstools.gears.io.rasterreader.OmsRasterReader"     
+			"TranspirationRaster"						"etpRasterCase.OmsTranspirationRaster"
+			"pathGenerator"								"pathGenerator.PathGenerator"
+			"writerTranspirationRaster"					"org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter" 
+			}
+			parameter{
+				"readerDem.file"           				"${home}/data/Bacino1/DemBacino1.asc"
+				"readerAirTemperature.file"				"${home}/output/Mappa_Temperature_20070101_1200.asc"
+				"readerShortWaveDirect.file"			"${home}/output/SWRB_rasterdir.asc"
+				"readerShortWaveDiffuse.file"			"${home}/output/SWRB_rasterdif.asc"
+				"readerLongWave.file"					"${home}/output/LwrbDownWellingRaster.asc"
+				//"readerHumidity.file"					"${home}/output/Mappa_umidità.asc"
+				//"readerWind.file"						"${home}/output/Mappa_vento.asc"
+				//"readerPressure.file"					"${home}/data/Mappa_pressione.asc" //scegli se toglierlo
+				// in teoria se lo commento va senza problemi mettendo il valore di default
+				//"readerLeafAreaIndex.file"				"${home}/data/Bacino1/Lai1.asc" 		
+				"TranspirationRaster.doHourly"			true   
+				"TranspirationRaster.tStartDate"		"${startDate}"    			
+				"writerTranspirationRaster.file"		"${home}/output/Mappa_traspirazione.asc"
+				}
+				connect {
+					"readerDem.outRaster"				"TranspirationRaster.inDemElevationGrid" 
+					"readerAirTemperature.outRaster"	"TranspirationRaster.inAirTemperatureGrid"
+					"readerShortWaveDirect.outRaster"  	"TranspirationRaster.inShortWaveRadiationDirectGrid"
+					"readerShortWaveDiffuse.outRaster" 	"TranspirationRaster.inShortWaveRadiationDiffuseGrid"
+					"readerLongWave.outRaster"  		"TranspirationRaster.inLongWaveRadiationGrid"
+				//	"readerHumidity.outRaster" 			"TranspirationRaster.inRelativeHumidityGrid"
+				//	"readerWind.outRaster" 				"TranspirationRaster.inWindVelocityGrid"
+					//"readerPressure.outRaster"   		"TranspirationRaster.inAtmosphericPressureGrid"
+					//"readerLeafAreaIndex.outRaster"		"TranspirationRaster.inLeafAreaIndexGrid"       	  		
+					"TranspirationRaster.outTranspirationGrid"		"writerTranspirationRaster.inRaster"      	
+					}
+			}
+	}

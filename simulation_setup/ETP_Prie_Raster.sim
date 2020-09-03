@@ -1,0 +1,65 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+def startDate= "2014-08-15 10:00"
+def endDate="2014-08-15 10:00"
+
+def ID=9
+
+OMS3.sim {
+
+     resource "$oms_prj/lib"
+    
+ model(while:"reader_data_temp.doProcess") {
+   components {
+
+        "reader_data_temp"            "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "reader_data_rad"             "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "PTEtp"                       "etpRasterCase.OmsPriestleyTaylorEtpModel"     
+        "writer_etp"                  "org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"      
+         
+   }
+
+  
+   parameter{
+        
+        "reader_data_temp.file"        "${home}/output/kriging/kriging_interpolated_Tag_20140815_1000.asc"
+
+        
+        "reader_data_rad.file"          "${home}/output/netrad_basento_raster.asc"  
+
+       
+            
+
+            
+        "PTEtp.defaultPressure"      101.3
+        
+        
+        // attento a quest'alpha!
+        "PTEtp.pAlpha"               1.06
+        
+        
+        "PTEtp.pGmorn"               0.35 
+        "PTEtp.pGnight"              0.75
+        "PTEtp.doHourly"             false
+            
+        "PTEtp.tStartDate"           "${startDate}"
+
+     
+        
+        "writer_etp.file"        "${home}/output/ET_priestley_basento_raster1_t.asc" 
+
+
+   }
+   connect {
+        
+        
+        "reader_data_temp.outRaster"               "PTEtp.inTemperatureGrid"
+        "reader_data_rad.outRaster"                "PTEtp.inNetradiationGrid"
+        "PTEtp.outETpDataGrid"                          "writer_etp.inRaster"
+   }
+
+ }
+}
+
+

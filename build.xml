@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Resevoirs" default="all" basedir=".">
+    <description>
+       Manages the project 'Resevoirs'.
+       Created at Thu Oct 20 16:01:39 CEST 2016.
+    </description>
+    <import file=".oms/project.xml"/>
+</project>

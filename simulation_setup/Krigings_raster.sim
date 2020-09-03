@@ -1,0 +1,83 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+// start and end date of the simulation
+def startDate= "2014-01-01 10:00"
+def endDate="2014-01-13 10:00"
+
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model(while: "reader_data.doProcess" ) {
+   components {
+    
+        "reader_data"            	       "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+        
+        "vreader_station"                   "org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader" 
+           
+        "reader_dem"                        "org.jgrasstools.gears.io.rasterreader.OmsRasterReader" 
+      
+        "kriging"                           "krigingsRasterCase.Krigings"  
+        
+        "pathGenerator"						"pathGenerator.PathGenerator"
+        
+        "writer_interpolated"               "org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter" 
+        
+            
+         
+   }
+
+  
+   parameter{
+   
+        // parameter of the reader components 
+        "reader_data.file"             "${home}/data/STAZIONI_P3.csv"
+        "reader_data.idfield"          "ID"  
+        "reader_data.tStart"           "${startDate}"
+        "reader_data.tEnd"             "${endDate}"
+        "reader_data.tTimestep"          60
+        "reader_data.fileNovalue"      "-9999"
+        
+
+        
+        "vreader_station.file"                       "${home}/data/stazioni_quote.shp"      
+         
+        "reader_dem.file"                      "${home}/output/geomorphology/basento_clip.asc"
+
+        
+        
+        
+		"kriging.fStationsid"            "ID_P"
+		"kriging.fStationsZ"			 "DEM"
+		"kriging.inNumCloserStations"     10
+
+
+		"kriging.pSemivariogramType"   "linear"
+		
+
+
+        "kriging.range" 							49333.94
+        "kriging.nugget" 			  				0.2402
+        "kriging.sill" 								0.1531
+        
+        "pathGenerator.pathToOutData"			"${home}/output/kriging/kriging_interpolated_Tag.asc"
+        
+        
+   }
+    connect {
+        
+       "reader_data.outData"                         "kriging.inData"
+       
+        "vreader_station.geodata"                "kriging.inStations"      
+        "reader_dem.outRaster"					"kriging.inGridCoverage2D"  
+         
+        "reader_data.tCurrent" 					"pathGenerator.tCurrent"	
+        "pathGenerator.pathOutDataComplete"				"writer_interpolated.file"
+        "kriging.outGrid"            		     "writer_interpolated.inRaster"
+
+   }
+
+ }
+}
+
+

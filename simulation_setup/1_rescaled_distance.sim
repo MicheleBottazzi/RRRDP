@@ -1,0 +1,70 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+
+OMS3.sim {
+
+resource "$oms_prj/lib"
+
+ model() {
+ 
+ // Il comando RescaledDistance permette di calcolare le distanze
+ // dall’uscita del bacino (outlet), calcolate lungo le direzioni di drenaggio.
+ // Queste distanze possono essere riscalate, cioè calcolate considerando
+ // velocità diverse nei versanti e nella rete idrografica.
+ // Per calcolare queste distanze viene quindi introdotto il parametro r,
+ // definito come il rapporto tra la velocità nei canali e nei versanti.
+ 
+   components {
+  
+  
+        "reader_flow"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "reader_net"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "reader_pit"            	  "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "rescaled_distance"			"org.jgrasstools.hortonmachine.modules.basin.rescaleddistance.OmsRescaledDistance"       
+        "writer_rescaled"            "org.jgrasstools.gears.io.rasterwriter.OmsRasterWriter"
+
+
+            
+         
+   }
+
+  
+   parameter{
+   
+   
+   		// lettura direzioni di drenaggio corrette
+         "reader_flow.file"                    "${home}/output/geomorphology/m11.asc"
+         
+         // lettura rete estratta
+         "reader_net.file"                     "${home}/output/geomorphology/n11.asc"
+         
+         // lettura pitfiller
+         "reader_pit.file"                     "${home}/output/geomorphology/dem11.asc"
+
+		// rapporto tra le velocità nei canali e versanti
+		 "rescaled_distance.pRatio"             10
+
+		// scrittura distanze riscalate
+         "writer_rescaled.file"				 "${home}/output/rescaled_distance_basento11.asc"
+
+
+
+        
+   }
+    connect {
+        
+        "reader_flow.outRaster"                    "rescaled_distance.inFlow"
+        "reader_net.outRaster"                     "rescaled_distance.inNet"
+        "reader_pit.outRaster"                     "rescaled_distance.inElev"
+        
+        
+        "rescaled_distance.outRescaled"			   	"writer_rescaled.inRaster"
+
+
+   }
+
+ }
+}
+
+

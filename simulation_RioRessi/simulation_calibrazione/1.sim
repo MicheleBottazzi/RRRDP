@@ -1,0 +1,184 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+def basin = "RioRessi"
+/*def startDate	=	"2012-08-20 19:00"
+def endDate		=	"2014-12-31 23:00"*/
+
+def startDate	=	"2015-01-01 00:00"
+def endDate		=	"2015-12-31 23:00"
+//def endDate		=	"2017-12-12 12:00"
+
+/*def startDate	=	"2014-01-01 00:00"
+def endDate		=	"2014-12-31 23:00"*/
+def ID=1
+def area=0.02193
+def timestep=60
+def typeET = "PT"
+def typeOF = "NS"
+
+OMS3.sim (name: "${ID}",
+          calibrate: "TRUE") {
+
+resource "$oms_prj/lib"
+    
+ model(while:"reader_data_precip.doProcess") {
+
+   components {
+   
+        "reader_data_ET"       				"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+        "reader_data_LAI"      				"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"      
+        "reader_data_precip"                   "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+        "reader_data_SWRB"                   "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+        "reader_data_temp"                     "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+        "reader_dem"                        "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "reader_sky"                         "org.jgrasstools.gears.io.rasterreader.OmsRasterReader"
+        "vreader_centroids"                      "org.jgrasstools.gears.io.shapefile.OmsShapefileFeatureReader"
+
+        "rainSnowSep"                           "rainSnowSperataion.RainSnowSeparationPointCase"   
+        "snow"                              	"snowMeltingPointCase.SnowMeltingPointCase"
+        "waterBudgetRootZone"             		"rootZone.WaterBudgetRootZone" 
+        "waterBudgetCanopy"            			"canopy.WaterBudgetCanopy"
+        "waterBudgetRunoff"		     			"runoff.WaterBudgetRunoff"
+        "waterBudgetGroundWater"              	"groundWater.WaterBudgetGroundWater"
+        "musk"									"muskingumCunge.MuskingumCunge1"
+
+       
+        "sum"					"sumSeries.SumSeries"
+        "outNodeMusk"               "ex0.Out1musk"
+        "outNodeStorage"            "ex0.Out1storage"
+
+     "writer_Qtot" 			"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"
+		"writer_Stot" 			"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"	
+   }
+
+  
+   parameter{
+   
+	"reader_data_precip.file"            "${home}/data/${basin}/${ID}/${basin}_PRP.csv"
+   	"reader_data_precip.idfield"          "ID"  
+   	"reader_data_precip.tStart"           "${startDate}"
+   	"reader_data_precip.tEnd"             "${endDate}"
+   	"reader_data_precip.tTimestep"         "${timestep}"
+   	"reader_data_precip.fileNovalue"      "-9999"                       
+        		
+        		"rainSnowSep.alfa_r"                1.08
+        		"rainSnowSep.alfa_s"                1.05
+        		"rainSnowSep.meltingTemperature"    1.94
+        
+		    	"reader_data_SWRB.file"             "${home}/data/${basin}/${ID}/${basin}_RAD.csv"
+   	"reader_data_SWRB.idfield"          "ID"  
+   	"reader_data_SWRB.tStart"           "${startDate}"
+   	"reader_data_SWRB.tEnd"             "${endDate}"
+   	"reader_data_SWRB.tTimestep"         "${timestep}"
+   	"reader_data_SWRB.fileNovalue"      "-9999"                 	        
+   	
+   	"reader_data_temp.file"              "${home}/data/${basin}/${ID}/${basin}_TEMP.csv"
+   	"reader_data_temp.idfield"           "ID"  
+   	"reader_data_temp.tStart"            "${startDate}"
+   	"reader_data_temp.tEnd"              "${endDate}"
+   	"reader_data_temp.tTimestep"         "${timestep}"
+   	"reader_data_temp.fileNovalue"       "-9999"          	        
+   	
+   	"reader_dem.file"                      "${home}/data/${basin}/${ID}/Dem${basin}_${ID}.tif"
+   	"reader_sky.file"                      "${home}/data/${basin}/${ID}/${basin}_skyview_${ID}.tif"         
+   	"vreader_centroids.file"               "${home}/data/${basin}/${ID}/${basin}_centroid_ID_${ID}.shp"   	                
+   	
+         
+         		"snow.fStationsid"                  "ID"
+         		"snow.model"                        "Hock"
+         		"snow.tStartDate"                   "${startDate}"
+         		"snow.combinedMeltingFactor"        0.955102
+         		"snow.freezingFactor"               0.089217
+         		"snow.alfa_l"                       0.304315
+         		"snow.radiationFactor"              0.000061
+        
+        	// 	"reader_data_ET.file"            	"${home}/data/${basin}/${ID}/RioRessi_ET_SO_flat_stress.csv"//${basin}_ET_${typeET}_flat.csv" 
+        	 	"reader_data_ET.file"            	"${home}/data/${basin}/${ID}/${basin}_ET_${typeET}126.csv" 
+   	"reader_data_ET.idfield"          	"ID"  
+   	"reader_data_ET.tStart"           	"${startDate}"
+   	"reader_data_ET.tEnd"             	"${endDate}"
+   	"reader_data_ET.tTimestep"          "${timestep}"
+   	"reader_data_ET.fileNovalue"       	"-9999"               
+   	
+   	"reader_data_LAI.file"            	"${home}/data/${basin}/${ID}/${basin}_LAI.csv"
+   	"reader_data_LAI.idfield"           "ID"  
+   	"reader_data_LAI.tStart"            "${startDate}"
+   	"reader_data_LAI.tEnd"              "${endDate}"
+   	"reader_data_LAI.tTimestep"          "${timestep}"
+   	"reader_data_LAI.fileNovalue"       "-9999"                     	    
+        		
+        		"waterBudgetCanopy.solver_model"  	"dp853"
+	     		"waterBudgetCanopy.kc_canopy" 	  	0.25
+	     		"waterBudgetCanopy.p"	  			0.65
+
+				"waterBudgetRootZone.solver_model"	"dp853"
+				"waterBudgetRootZone.s_RootZoneMax" 250
+	    		"waterBudgetRootZone.pB_soil"		1
+	    		"waterBudgetRootZone.a"				0.2
+	    		"waterBudgetRootZone.b" 			1.74
+	    		"waterBudgetRootZone.A"				"${area}"
+	    		"waterBudgetRootZone.inTimestep"    "${timestep}"
+	    
+	    		"waterBudgetRunoff.solver_model"	"dp853"
+				"waterBudgetRunoff.c" 	 			255.68
+				"waterBudgetRunoff.d" 	 			1
+				"waterBudgetRunoff.A"				"${area}"
+				"waterBudgetRunoff.timeStep"		"${timestep}"
+				"waterBudgetRunoff.s_RunoffMax" 	1	
+	    
+	    		"waterBudgetGroundWater.solver_model"		"dp853"
+				"waterBudgetGroundWater.e" 					255.68
+				"waterBudgetGroundWater.f" 	 				7.586287
+				"waterBudgetGroundWater.A"					"${area}"
+				"waterBudgetGroundWater.timeStep"			"${timestep}"
+				"waterBudgetGroundWater.s_GroundWaterMax" 	532.20		
+		
+    
+     	"writer_Qtot.file" "${home}/output/${basin}Out/Calibrazione/Idrogramma_${ID}_${basin}_${typeET}_${typeOF}.csv"
+   	"writer_Qtot.tStart" "${startDate}"
+   	"writer_Qtot.tTimestep" "${timestep}"
+   	"writer_Qtot.fileNovalue" "-9999"        
+   	
+   	"writer_Stot.file" "${home}/output/${basin}Out/Calibrazione/Storage_${ID}_${basin}_${typeET}_${typeOF}.csv"
+   	"writer_Stot.tStart" "${startDate}"
+   	"writer_Stot.tTimestep" "${timestep}"
+   	"writer_Stot.fileNovalue" "-9999"      
+				
+				"musk.l"  0.28697
+        "musk.uc"  2
+        "musk.x"  0.3 
+
+        
+   }
+    connect {
+   	
+   	    "reader_data_precip.outData"                "rainSnowSep.inPrecipitationValues"
+        "reader_data_temp.outData"                  "rainSnowSep.inTemperatureValues"
+        "rainSnowSep.meltingTemperature"     		"snow.meltingTemperature"
+        "rainSnowSep.outRainfallHM"                 "snow.inRainfallValues"
+        "rainSnowSep.outSnowfallHM"                 "snow.inSnowfallValues"
+        "reader_data_temp.outData"                  "snow.inTemperatureValues"
+        "reader_data_SWRB.outData"                  "snow.inShortwaveRadiationValues"
+        "reader_dem.outRaster"                      "snow.inDem"
+        "reader_sky.outRaster"                    	"snow.inSkyview"
+        "vreader_centroids.geodata"              	"snow.inStations"
+   	   	 "snow.outMeltingDischargeHM"             		 "waterBudgetCanopy.inHMRain"   	      	    
+        "reader_data_ET.outData"           				 "waterBudgetCanopy.inHMETp"
+        "reader_data_LAI.outData"			 			 "waterBudgetCanopy.inHMLAI"
+        "waterBudgetCanopy.outHMThroughfall"      "waterBudgetRootZone.inHMRain" 
+         "reader_data_ET.outData"          		     "waterBudgetRootZone.inHMETp"
+         "waterBudgetCanopy.outHMAET"             "waterBudgetRootZone.inHMEwc"   
+         "waterBudgetRootZone.outHMR"					"waterBudgetGroundWater.inHMRechargeValues"
+         "waterBudgetRootZone.outHMquick_mm"			"waterBudgetRunoff.inHMRechargeValues"		        
+		"waterBudgetRunoff.outHMDischarge"   "sum.inHMDischarge"            
+        "waterBudgetGroundWater.outHMDischarge"             "sum.inHMDischarge2"
+		"sum.outHMQtot"							 	"musk.inComputation"	
+			//	"musk.outMusk"							 	"outNodeMusk.invalMusk"
+		"musk.outMusk"						 "writer_Qtot.inData"	
+			//"dataProcess.inHMStorage"					
+		"waterBudgetRootZone.outHMStorage"            "writer_Stot.inData"// "outNodeStorage.invalStorage"   
+   }
+ }
+}
+

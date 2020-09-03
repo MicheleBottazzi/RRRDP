@@ -1,0 +1,61 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+def basin = "RioRessi"
+def startDate	=	"2012-08-01 00:00"
+def endDate		=	"2019-05-10 23:00"
+def basinID = 1
+
+def timestep = 60
+
+/*def basin = "ReDellaPietra"
+def startDate	=	"2018-06-27 11:00"
+def endDate		=	"2018-12-11 12:00"*/
+OMS3.sim {
+	resource "$oms_prj/lib"		
+	model(while: "readerDataShortWaveDirect.doProcess" ) {
+		components {    
+			"readerDataShortWaveDirect"         		"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"readerDataLongWaveDown"         			"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"readerDataLongWaveUp"         				"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+			"net"										"netRadiation.NetRadiationPointCase"
+			"writer_net"								"org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"                      
+			}  
+			parameter{   
+				"readerDataShortWaveDirect.file"		"${home}/data/${basin}/${basinID}/${basin}_RAD.csv"
+				"readerDataShortWaveDirect.idfield"		"ID"
+				"readerDataShortWaveDirect.tStart"		"${startDate}"
+				"readerDataShortWaveDirect.tEnd"		"${endDate}"
+				"readerDataShortWaveDirect.tTimestep"	"${timestep}" 
+				"readerDataShortWaveDirect.fileNovalue"	"-9999"     
+				
+				"readerDataLongWaveDown.file"        	"${home}/data/${basin}/${basinID}/${basin}_LongwaveDownwelling.csv"
+				"readerDataLongWaveDown.idfield"     	"ID"
+				"readerDataLongWaveDown.tStart"      	"${startDate}"
+				"readerDataLongWaveDown.tEnd"        	"${endDate}"
+				"readerDataLongWaveDown.tTimestep"   	"${timestep}"  
+				"readerDataLongWaveDown.fileNovalue" 	"-9999"		        
+				
+				"readerDataLongWaveUp.file"        		"${home}/data/${basin}/${basinID}/${basin}_LongwaveUpwelling.csv"
+				"readerDataLongWaveUp.idfield"     		"ID"
+				"readerDataLongWaveUp.tStart"      		"${startDate}"
+				"readerDataLongWaveUp.tEnd"        		"${endDate}"
+				"readerDataLongWaveUp.tTimestep"   		"${timestep}"
+				"readerDataLongWaveUp.fileNovalue" 		"-9999"
+				
+				// parameter of the net radiation component
+				"net.alfa"								0.2			            
+				// parameter of the writing component    
+				"writer_net.file"						"${home}/data/${basin}/${basinID}/${basin}_NetRadiation.csv"
+				"writer_net.tStart"						"${startDate}"
+				"writer_net.fileNovalue"				"-9999"
+				"writer_net.tTimestep"					"${timestep}"        
+				}
+				connect {        
+					"readerDataShortWaveDirect.outData"	"net.inShortwaveValues"
+					"readerDataLongWaveDown.outData"	"net.inDownwellingValues"
+					"readerDataLongWaveUp.outData"		"net.inUpwellingValues"
+					"net.outHMnetRad"					"writer_net.inData"
+					}
+			}
+	}
+

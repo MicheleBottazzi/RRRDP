@@ -1,0 +1,72 @@
+import static oms3.SimBuilder.instance as OMS3
+def home = oms_prj
+
+def startDate= "2013-12-15 00:00"
+def endDate= "2015-12-16 00:00"
+OMS3.sim {
+
+     resource "$oms_prj/lib"
+    
+ model(while:"reader_data_temp.doProcess") {
+   components {
+
+        "reader_data_temp"            "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+        "reader_data_rad"             "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorReader"
+        "PTEtp"                       "etpPointCase.OmsPriestleyTaylorEtpModel"     
+        "writer_etp"                  "org.jgrasstools.gears.io.timedependent.OmsTimeSeriesIteratorWriter"      
+         
+   }
+
+  
+   parameter{
+        
+        "reader_data_temp.file"        "${home}/output/Sele/kriging/kriging_interpolated_T_total.csv"
+        "reader_data_temp.idfield"      "ID"  
+        "reader_data_temp.tStart"       "${startDate}"
+        "reader_data_temp.tEnd"          "${endDate}"
+        "reader_data_temp.tTimestep"      60
+        "reader_data_temp.fileNovalue"   "-9999"
+        
+        "reader_data_rad.file"          "${home}/output/Sele/netrad_sele.csv" 
+        "reader_data_rad.idfield"      "ID"
+        "reader_data_rad.tStart"        "${startDate}"
+        "reader_data_rad.tEnd"           "${endDate}"
+        "reader_data_rad.tTimestep"      60  
+        "reader_data_rad.fileNovalue"   "-9999"
+       
+            
+
+            
+        "PTEtp.defaultPressure"      101.3
+        
+        
+        // attento a quest'alpha!
+        "PTEtp.pAlpha"               0.8
+        
+        
+        "PTEtp.pGmorn"               0.35 
+        "PTEtp.pGnight"              0.75
+        "PTEtp.doHourly"             true
+            
+        "PTEtp.tStartDate"           "${startDate}"
+
+     
+        
+        "writer_etp.file"        "${home}/output/Sele/ET_priestley_sele.csv" 
+        "writer_etp.tStart"       "${startDate}"
+        "writer_etp.tTimestep"   60
+
+
+   }
+   connect {
+        
+        
+        "reader_data_temp.outData"               "PTEtp.inTemp"
+        "reader_data_rad.outData"                "PTEtp.inNetradiation"
+        "PTEtp.outPTEtp"                          "writer_etp.inData"
+   }
+
+ }
+}
+
+
